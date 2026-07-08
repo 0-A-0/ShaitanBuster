@@ -30,6 +30,13 @@ android {
             )
             signingConfig = signingConfigs.getByName("debug")
         }
+        create("profile") {
+            initWith(getByName("release"))
+            // Разрешаем профилирование, но сохраняем скорость релиза
+            signingConfig = signingConfigs.getByName("debug")
+            matchingFallbacks.add("release")
+            isProfileable = true
+        }
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
