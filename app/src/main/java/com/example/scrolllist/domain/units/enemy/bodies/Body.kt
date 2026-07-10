@@ -1,9 +1,9 @@
-package com.example.scrolllist.domain.units.enemy
+package com.example.scrolllist.domain.units.enemy.bodies
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.unit.IntSize
-import com.example.scrolllist.ui.DrawableWithZ
+import com.example.scrolllist.domain.DrawableWithZ
 
 abstract class Body(
     position: Offset,

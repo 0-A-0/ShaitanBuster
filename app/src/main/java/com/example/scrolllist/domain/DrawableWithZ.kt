@@ -1,4 +1,4 @@
-package com.example.scrolllist.ui
+package com.example.scrolllist.domain
 
 import androidx.compose.runtime.Stable
 

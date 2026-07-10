@@ -1,4 +1,4 @@
-package com.example.scrolllist.domain.units.enemy
+package com.example.scrolllist.domain.units.enemy.bodies
 
 enum class BodyType {
     Simple_Body,

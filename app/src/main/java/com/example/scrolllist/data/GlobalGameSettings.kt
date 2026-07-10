@@ -1,4 +1,4 @@
-package com.example.scrolllist
+package com.example.scrolllist.data
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

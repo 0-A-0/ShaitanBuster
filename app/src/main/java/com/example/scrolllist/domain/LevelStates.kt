@@ -1,4 +1,4 @@
-package com.example.scrolllist
+package com.example.scrolllist.domain
 
 data class LevelStates(
     val spawnTime: Long,

@@ -3,8 +3,9 @@ package com.example.scrolllist.domain.units.enemy
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.unit.IntSize
-import com.example.scrolllist.ui.DrawableWithZ
-import com.example.scrolllist.domain.Accumulator
+import com.example.scrolllist.domain.units.enemy.bodies.BodyType
+import com.example.scrolllist.domain.DrawableWithZ
+import com.example.scrolllist.domain.utils.Accumulator
 
 abstract class Enemy(
     val speed: Float,

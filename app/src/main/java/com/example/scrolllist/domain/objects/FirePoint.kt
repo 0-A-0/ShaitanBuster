@@ -2,7 +2,7 @@ package com.example.scrolllist.domain.objects
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.IntSize
-import com.example.scrolllist.domain.Accumulator
+import com.example.scrolllist.domain.utils.Accumulator
 
 class FirePoint(
     position: Offset,

@@ -1,8 +1,8 @@
 package com.example.scrolllist.domain.units.enemy
 
-import androidx.compose.runtime.Stable
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.IntSize
+import com.example.scrolllist.domain.units.enemy.bodies.BodyType
 
 class Spawner(
     val action:((Enemy) -> Unit),

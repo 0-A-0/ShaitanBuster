@@ -1,4 +1,4 @@
-package com.example.scrolllist.domain
+package com.example.scrolllist.domain.utils
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect

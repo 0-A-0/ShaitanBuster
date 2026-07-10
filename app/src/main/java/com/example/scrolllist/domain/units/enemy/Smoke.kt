@@ -2,7 +2,8 @@ package com.example.scrolllist.domain.units.enemy
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.IntSize
-import com.example.scrolllist.domain.calcDistance
+import com.example.scrolllist.domain.units.enemy.bodies.BodyType
+import com.example.scrolllist.domain.utils.calcDistance
 import kotlin.math.abs
 
 class Smoke(

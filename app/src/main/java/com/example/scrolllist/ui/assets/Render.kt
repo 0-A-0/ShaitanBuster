@@ -1,4 +1,4 @@
-package com.example.scrolllist.ui
+package com.example.scrolllist.ui.assets
 
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
@@ -19,8 +19,8 @@ import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.round
 import androidx.compose.ui.unit.toOffset
 import androidx.compose.ui.util.fastCoerceAtMost
-import com.example.scrolllist.domain.calcAngle
-import com.example.scrolllist.domain.calcDistance
+import com.example.scrolllist.domain.utils.calcAngle
+import com.example.scrolllist.domain.utils.calcDistance
 import com.example.scrolllist.domain.objects.Ammunition
 import com.example.scrolllist.domain.objects.AmmunitionType
 import com.example.scrolllist.domain.objects.BoxObject
@@ -33,28 +33,25 @@ import com.example.scrolllist.domain.objects.StaticObject
 import com.example.scrolllist.domain.units.Player
 import com.example.scrolllist.domain.units.PlayerTrend
 import com.example.scrolllist.domain.units.enemy.Blood
-import com.example.scrolllist.domain.units.enemy.Body
+import com.example.scrolllist.domain.units.enemy.bodies.Body
 import com.example.scrolllist.domain.units.enemy.Crow
 import com.example.scrolllist.domain.units.enemy.CrowMinion
 import com.example.scrolllist.domain.units.enemy.Enemy
-import com.example.scrolllist.domain.units.enemy.FixedBody
-import com.example.scrolllist.domain.units.enemy.FlyableBody
-import com.example.scrolllist.domain.units.enemy.GhostBody
+import com.example.scrolllist.domain.units.enemy.bodies.FixedBody
+import com.example.scrolllist.domain.units.enemy.bodies.FlyableBody
+import com.example.scrolllist.domain.units.enemy.bodies.GhostBody
 import com.example.scrolllist.domain.units.enemy.Scarecrow
-import com.example.scrolllist.domain.units.enemy.SimpleBody
+import com.example.scrolllist.domain.units.enemy.bodies.SimpleBody
 import com.example.scrolllist.domain.units.enemy.Smoke
 import com.example.scrolllist.domain.units.enemy.Spawner
 import com.example.scrolllist.domain.units.weapon.Axe
 import com.example.scrolllist.domain.units.weapon.Revolver
 import com.example.scrolllist.domain.units.weapon.Shotgun
 import com.example.scrolllist.domain.units.weapon.Weapon
-import com.example.scrolllist.ui.assets.EnemyAssets
-import com.example.scrolllist.ui.assets.GameAssets
-import com.example.scrolllist.ui.assets.PlayerAssets
-import com.example.scrolllist.ui.assets.WeaponAssets
+import com.example.scrolllist.domain.DrawableWithZ
 import kotlin.math.sin
 
-fun getPlayerFrame(player: Player, playerAssets: PlayerAssets):ImageBitmap{
+private fun getPlayerFrame(player: Player, playerAssets: PlayerAssets):ImageBitmap{
     return when (player.trend) {
         PlayerTrend.Left -> {
             playerAssets.animation.left[player.indexFrame]
@@ -93,7 +90,7 @@ fun getPlayerFrame(player: Player, playerAssets: PlayerAssets):ImageBitmap{
         }
     }
 }
-fun DrawScope.drawPlayer(player: com.example.scrolllist.domain.units.Player, playerAssets: PlayerAssets) {
+private fun DrawScope.drawPlayer(player: com.example.scrolllist.domain.units.Player, playerAssets: PlayerAssets) {
     val colorFilter = if (player.damageEffectAlpha > 0) {
         ColorFilter.tint(
             Color.Red.copy(alpha = player.damageEffectAlpha * 0.8f),
@@ -107,7 +104,7 @@ fun DrawScope.drawPlayer(player: com.example.scrolllist.domain.units.Player, pla
     )
 }
 
-fun DrawScope.drawSpawnEffect(enemy: Enemy, enemyAssets: EnemyAssets) {
+private fun DrawScope.drawSpawnEffect(enemy: Enemy, enemyAssets: EnemyAssets) {
     drawImage(
         dstSize = enemy.dstSize,
         dstOffset = enemy.position.round(),
@@ -115,7 +112,7 @@ fun DrawScope.drawSpawnEffect(enemy: Enemy, enemyAssets: EnemyAssets) {
     )
 }
 
-fun DrawScope.onDrawScarecrowOrSmoke(enemy: Enemy, enemyAssets: EnemyAssets) {
+private fun DrawScope.onDrawScarecrowOrSmoke(enemy: Enemy, enemyAssets: EnemyAssets) {
     if (!enemy.enemyIsReady) {
         drawSpawnEffect(enemy, enemyAssets)
     } else {
@@ -130,7 +127,7 @@ fun DrawScope.onDrawScarecrowOrSmoke(enemy: Enemy, enemyAssets: EnemyAssets) {
     }
 }
 
-fun DrawScope.onDrawSpawner(enemy: Spawner, enemyAssets: EnemyAssets) {
+private fun DrawScope.onDrawSpawner(enemy: Spawner, enemyAssets: EnemyAssets) {
     if (!enemy.enemyIsReady) {
         drawSpawnEffect(enemy, enemyAssets)
     } else {
@@ -158,7 +155,7 @@ fun DrawScope.onDrawSpawner(enemy: Spawner, enemyAssets: EnemyAssets) {
     }
 }
 
-fun DrawScope.onDrawCrow(enemy: Crow, enemyAssets: EnemyAssets) {
+private fun DrawScope.onDrawCrow(enemy: Crow, enemyAssets: EnemyAssets) {
     if (!enemy.enemyIsReady) {
         drawSpawnEffect(enemy, enemyAssets)
     } else {
@@ -178,7 +175,7 @@ fun DrawScope.onDrawCrow(enemy: Crow, enemyAssets: EnemyAssets) {
     }
 }
 
-fun DrawScope.onDrawCrowMinion(enemy: CrowMinion, enemyAssets: EnemyAssets) {
+private fun DrawScope.onDrawCrowMinion(enemy: CrowMinion, enemyAssets: EnemyAssets) {
     with(enemy) {
         if (!enemyIsReady) {
             drawSpawnEffect(enemy, enemyAssets)
@@ -240,7 +237,7 @@ val bodyColorFilter = ColorFilter.tint(
     blendMode = BlendMode.SrcAtop
 )
 
-fun DrawScope.drawBody(body: Body, enemyAssets: EnemyAssets) {
+private fun DrawScope.drawBody(body: Body, enemyAssets: EnemyAssets) {
     scale(0.9f,0.9f, pivot = body.center) {
         drawImage(
             dstSize = body.dstSize,
@@ -251,7 +248,7 @@ fun DrawScope.drawBody(body: Body, enemyAssets: EnemyAssets) {
         )
     }
 }
-fun DrawScope.drawGhostBody(body: GhostBody, enemyAssets: EnemyAssets) {
+private fun DrawScope.drawGhostBody(body: GhostBody, enemyAssets: EnemyAssets) {
     with(body) {
         scale(0.9f, 0.9f, pivot = body.center) {
             drawImage(
@@ -266,14 +263,14 @@ fun DrawScope.drawGhostBody(body: GhostBody, enemyAssets: EnemyAssets) {
     }
 }
 
-fun DrawScope.drawStaticObject(_object: StaticObject, view:ImageBitmap){
+private fun DrawScope.drawStaticObject(_object: StaticObject, view:ImageBitmap){
     drawImage(
         image = view,
         dstSize = _object.dstSize,
         dstOffset = _object.position
     )
 }
-fun DrawScope.drawDinamicObject(_object: DinamicObject, animation:List<ImageBitmap>){
+private fun DrawScope.drawDinamicObject(_object: DinamicObject, animation:List<ImageBitmap>){
     drawImage(
         image = animation[_object.indexFrame],
         dstSize = _object.dstSize,

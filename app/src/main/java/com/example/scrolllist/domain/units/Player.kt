@@ -8,10 +8,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.unit.IntSize
-import com.example.scrolllist.ui.DrawableWithZ
-import com.example.scrolllist.domain.Accumulator
-import com.example.scrolllist.domain.calcDistanceForComparison
-import com.example.scrolllist.domain.checkNotCollision
+import com.example.scrolllist.domain.DrawableWithZ
+import com.example.scrolllist.domain.utils.Accumulator
+import com.example.scrolllist.domain.utils.calcDistanceForComparison
+import com.example.scrolllist.domain.utils.checkNotCollision
 import com.example.scrolllist.domain.objects.BoxObject
 import com.example.scrolllist.domain.units.enemy.Enemy
 import com.example.scrolllist.domain.units.enemy.EnemyType

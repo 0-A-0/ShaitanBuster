@@ -4,7 +4,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.round
-import com.example.scrolllist.ui.DrawableWithZ
+import com.example.scrolllist.domain.DrawableWithZ
 
 abstract class StaticObject(
     val startPosition: Offset,

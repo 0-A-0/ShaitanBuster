@@ -1,7 +1,7 @@
 package com.example.scrolllist.domain.units.enemy
 
 import androidx.compose.ui.geometry.Offset
-import com.example.scrolllist.domain.Accumulator
+import com.example.scrolllist.domain.utils.Accumulator
 
 data class Blood(
     val pivot: Offset,

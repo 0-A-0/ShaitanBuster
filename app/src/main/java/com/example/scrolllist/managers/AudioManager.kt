@@ -1,4 +1,4 @@
-package com.example.scrolllist
+package com.example.scrolllist.managers
 
 import android.content.Context
 import android.media.AudioAttributes
@@ -7,6 +7,7 @@ import android.media.SoundPool
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import com.example.scrolllist.R
 
 object AudioManager {
     private var soundPool: SoundPool? = null

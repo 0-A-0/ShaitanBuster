@@ -1,4 +1,4 @@
-package com.example.scrolllist.domain
+package com.example.scrolllist.domain.utils
 
 class Accumulator(private val speed:Float) {
     var accumulator = 0f

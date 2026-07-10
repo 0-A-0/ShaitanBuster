@@ -1,4 +1,4 @@
-package com.example.scrolllist
+package com.example.scrolllist.managers
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

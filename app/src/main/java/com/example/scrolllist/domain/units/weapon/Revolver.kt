@@ -1,35 +1,22 @@
 package com.example.scrolllist.domain.units.weapon
 
-import androidx.compose.animation.core.Animatable
-import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.FilterQuality
-import androidx.compose.ui.graphics.ImageBitmap
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.drawscope.DrawScope
 import androidx.compose.ui.unit.IntSize
-import androidx.compose.ui.unit.round
-import androidx.compose.ui.util.fastCoerceAtMost
-import com.example.scrolllist.AudioManager
-import com.example.scrolllist.TimeManager
-import com.example.scrolllist.domain.Accumulator
-import com.example.scrolllist.domain.calcDistance
-import com.example.scrolllist.domain.isIntersectWithLine
-import com.example.scrolllist.domain.units.enemy.Body
+import com.example.scrolllist.managers.AudioManager
+import com.example.scrolllist.managers.TimeManager
+import com.example.scrolllist.domain.utils.Accumulator
+import com.example.scrolllist.domain.utils.isIntersectWithLine
+import com.example.scrolllist.domain.units.enemy.bodies.Body
 import com.example.scrolllist.domain.units.enemy.Enemy
-import com.example.scrolllist.domain.units.enemy.GhostBody
+import com.example.scrolllist.domain.units.enemy.bodies.GhostBody
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
-import kotlin.math.roundToInt
 
 @Stable
 class Revolver(
