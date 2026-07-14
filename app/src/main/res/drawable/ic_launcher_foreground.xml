@@ -21,34 +21,22 @@
     android:viewportWidth="24"
     android:viewportHeight="24">
 
-  <!-- Головной контур -->
+  <path
+      android:fillColor="#000000"
+      android:pathData="M 15,12 L 12,12 L 15,5 Z" />
+  <path
+      android:fillColor="#000000"
+      android:pathData="M 9,12 L 12,12 L 9,5 Z" />
   <path
       android:name="head_outline"
       android:fillColor="#FF000000"
       android:strokeColor="#000000"
       android:strokeWidth="1"
       android:pathData="M12,8 C8,8 8,12 12,16 C16,12 16,8 12,8 Z"/>
-  <!-- Левый рог -->
   <path
-      android:name="left_horn"
-      android:fillColor="#000000"
-      android:strokeColor="#000000"
-      android:strokeWidth="1"
-      android:pathData="M6,6 C6,4 8,2 10,2 C12,2 14,4 14,6 L14,8 Q12,8 10,8 Z"/>
-
-  <!-- Правый рог -->
+      android:fillColor="#FF0000"
+      android:pathData="M 15,12 m -5,0 a 1,1 0 1,1 1,0 " />
   <path
-      android:name="right_horn"
-      android:fillColor="#000000"
-      android:strokeColor="#000000"
-      android:strokeWidth="1"
-      android:pathData="M18,6 C18,4 16,2 14,2 C12,2 10,4 10,6 L10,8 Q12,8 14,8 Z"/>
-  <!-- Узкая аккуратная борода -->
-  <path
-      android:name="beard"
-      android:fillColor="#B10C0C"
-      android:strokeColor="#FFC107"
-      android:strokeWidth="1"
-      android:pathData="M10,16 Q12,18 14,16 Z"/>
-
+      android:fillColor="#FF0000"
+      android:pathData="M 18,12 m -5,0 a 1,1 0 1,1 1,0 " />
 </vector>

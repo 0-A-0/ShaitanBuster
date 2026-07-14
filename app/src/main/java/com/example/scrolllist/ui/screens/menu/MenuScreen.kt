@@ -18,9 +18,9 @@ import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import com.example.scrolllist.data.GlobalGameSettings
+import com.example.scrolllist.ui.screens.game.GameScreenController
 import com.example.scrolllist.ui.screens.results.GameOver
 import com.example.scrolllist.ui.screens.results.GameOverInfinity
-import com.example.scrolllist.ui.screens.game.GameScreenController
 import com.example.scrolllist.ui.screens.results.GameWin
 
 @Composable
