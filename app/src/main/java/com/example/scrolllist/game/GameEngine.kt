@@ -306,8 +306,10 @@ class GameEngine(
             }
             shotgun.update(deltaTime)
             revolver.update(deltaTime)
-            checkLevelProgress()
-            checkIsLevelComplete(deltaTime)
+            if (mode == 0) {
+                checkLevelProgress()
+                checkIsLevelComplete(deltaTime)
+            }
             _listOfDrawableWithZ.apply {
                 clear()
                 addAll(enemies)
