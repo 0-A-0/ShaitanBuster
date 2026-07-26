@@ -51,7 +51,7 @@ import com.example.scrolllist.domain.units.weapon.Weapon
 import com.example.scrolllist.domain.DrawableWithZ
 import kotlin.math.sin
 
-private fun getPlayerFrame(player: Player, playerAssets: PlayerAssets):ImageBitmap{
+private fun getPlayerFrame(player: Player, playerAssets: PlayerAssets): ImageBitmap {
     return when (player.trend) {
         PlayerTrend.Left -> {
             playerAssets.animation.left[player.indexFrame]
@@ -90,7 +90,11 @@ private fun getPlayerFrame(player: Player, playerAssets: PlayerAssets):ImageBitm
         }
     }
 }
-private fun DrawScope.drawPlayer(player: com.example.scrolllist.domain.units.Player, playerAssets: PlayerAssets) {
+
+private fun DrawScope.drawPlayer(
+    player: com.example.scrolllist.domain.units.Player,
+    playerAssets: PlayerAssets
+) {
     val colorFilter = if (player.damageEffectAlpha > 0) {
         ColorFilter.tint(
             Color.Red.copy(alpha = player.damageEffectAlpha * 0.8f),
@@ -99,7 +103,7 @@ private fun DrawScope.drawPlayer(player: com.example.scrolllist.domain.units.Pla
     } else null
     drawImage(
         topLeft = player.position,
-        image = getPlayerFrame(player,playerAssets),
+        image = getPlayerFrame(player, playerAssets),
         colorFilter = colorFilter,
     )
 }
@@ -159,19 +163,19 @@ private fun DrawScope.onDrawCrow(enemy: Crow, enemyAssets: EnemyAssets) {
     if (!enemy.enemyIsReady) {
         drawSpawnEffect(enemy, enemyAssets)
     } else {
-    val currentAnimation =
-        if (enemy.angle < 180f) enemyAssets.frontAnimationMirrored else enemyAssets.frontAnimation
-    currentAnimation?.let {
-        rotate(enemy.angle, pivot = enemy.center) {
-            drawImage(
-                dstSize = enemy.dstSize,
-                dstOffset = enemy.position.round(),
-                image = it[enemy.index],
-                alpha = enemy.alpha.value,
-                filterQuality = FilterQuality.None
-            )
+        val currentAnimation =
+            if (enemy.angle < 180f) enemyAssets.frontAnimationMirrored else enemyAssets.frontAnimation
+        currentAnimation?.let {
+            rotate(enemy.angle, pivot = enemy.center) {
+                drawImage(
+                    dstSize = enemy.dstSize,
+                    dstOffset = enemy.position.round(),
+                    image = it[enemy.index],
+                    alpha = enemy.alpha.value,
+                    filterQuality = FilterQuality.None
+                )
+            }
         }
-    }
     }
 }
 
@@ -221,24 +225,25 @@ private fun DrawScope.onDrawCrowMinion(enemy: CrowMinion, enemyAssets: EnemyAsse
     }
 }
 
-fun DrawScope.drawBlood(bloodList: List<Blood>, animation:List<ImageBitmap>) {
+fun DrawScope.drawBlood(bloodList: List<Blood>, animation: List<ImageBitmap>) {
     for (blood in bloodList) {
-            rotate(blood.angle, blood.pivot) {
-                drawImage(
-                    topLeft = blood.position,
-                    image = animation[blood.index],
+        rotate(blood.angle, blood.pivot) {
+            drawImage(
+                topLeft = blood.position,
+                image = animation[blood.index],
 //                    colorFilter = ColorFilter.tint(Color(0x54FF5722))
-                )
+            )
         }
     }
 }
+
 val bodyColorFilter = ColorFilter.tint(
     Color.Black.copy(alpha = 0.7f),
     blendMode = BlendMode.SrcAtop
 )
 
 private fun DrawScope.drawBody(body: Body, enemyAssets: EnemyAssets) {
-    scale(0.9f,0.9f, pivot = body.center) {
+    scale(0.9f, 0.9f, pivot = body.center) {
         drawImage(
             dstSize = body.dstSize,
             dstOffset = body.position.round(),
@@ -248,6 +253,7 @@ private fun DrawScope.drawBody(body: Body, enemyAssets: EnemyAssets) {
         )
     }
 }
+
 private fun DrawScope.drawGhostBody(body: GhostBody, enemyAssets: EnemyAssets) {
     with(body) {
         scale(0.9f, 0.9f, pivot = body.center) {
@@ -263,44 +269,54 @@ private fun DrawScope.drawGhostBody(body: GhostBody, enemyAssets: EnemyAssets) {
     }
 }
 
-private fun DrawScope.drawStaticObject(_object: StaticObject, view:ImageBitmap){
+private fun DrawScope.drawStaticObject(_object: StaticObject, view: ImageBitmap) {
     drawImage(
         image = view,
         dstSize = _object.dstSize,
         dstOffset = _object.position
     )
 }
-private fun DrawScope.drawDinamicObject(_object: DinamicObject, animation:List<ImageBitmap>){
+
+private fun DrawScope.drawDinamicObject(_object: DinamicObject, animation: List<ImageBitmap>) {
     drawImage(
         image = animation[_object.indexFrame],
         dstSize = _object.dstSize,
         dstOffset = _object.position
     )
 }
+
 fun DrawScope.drawWithZ(listOfDrawableWithZ: List<DrawableWithZ>, assets: GameAssets) {
     for (i in listOfDrawableWithZ.indices) {
         val entity = listOfDrawableWithZ[i]
-        when(entity){
-            is Player -> drawPlayer(entity,assets.playerAssets)
-            is Spawner -> onDrawSpawner(entity,assets.spawnerAssets)
-            is Crow -> onDrawCrow(entity,assets.crowAssets)
-            is CrowMinion -> onDrawCrowMinion(entity,assets.crowAssets)
-            is Ammunition -> drawStaticObject(entity, view = when(entity.type){
-                AmmunitionType.Pellets -> assets.pellets
-                AmmunitionType.Cartridges -> assets.cartridges
-            })
+        when (entity) {
+            is Player -> drawPlayer(entity, assets.playerAssets)
+            is Spawner -> onDrawSpawner(entity, assets.spawnerAssets)
+            is Crow -> onDrawCrow(entity, assets.crowAssets)
+            is CrowMinion -> onDrawCrowMinion(entity, assets.crowAssets)
+            is Ammunition -> drawStaticObject(
+                entity, view = when (entity.type) {
+                    AmmunitionType.Pellets -> assets.pellets
+                    AmmunitionType.Cartridges -> assets.cartridges
+                }
+            )
+
             is BoxObject -> drawStaticObject(entity, assets.box_)
             is FirePoint -> drawDinamicObject(entity, assets.fireAnimation)
-            is Scarecrow -> onDrawScarecrowOrSmoke(entity,assets.scarecrowAssets)
-            is Smoke -> onDrawScarecrowOrSmoke(entity,assets.smokeAssets)
-            is GhostBody -> drawGhostBody(entity,assets.smokeAssets)
-            is SimpleBody -> drawBody(entity,assets.scarecrowAssets)
-            is FixedBody -> drawBody(entity,assets.spawnerAssets)
+            is Scarecrow -> onDrawScarecrowOrSmoke(entity, assets.scarecrowAssets)
+            is Smoke -> onDrawScarecrowOrSmoke(entity, assets.smokeAssets)
+            is GhostBody -> drawGhostBody(entity, assets.smokeAssets)
+            is SimpleBody -> drawBody(entity, assets.scarecrowAssets)
+            is FixedBody -> drawBody(entity, assets.spawnerAssets)
             is FlyableBody -> drawBody(entity, assets.crowAssets)
         }
     }
 }
-fun DrawScope.drawKillmark(killmarkController: KillmarkController, textMeasurer: TextMeasurer, gameAssets: GameAssets) {
+
+fun DrawScope.drawKillmark(
+    killmarkController: KillmarkController,
+    textMeasurer: TextMeasurer,
+    gameAssets: GameAssets
+) {
     killmarkController.killmark?.let { killmark ->
         val killmark_position = IntOffset(
             x = (size.width.toInt() - killmark.dstSize.width) / 2,
@@ -314,7 +330,7 @@ fun DrawScope.drawKillmark(killmarkController: KillmarkController, textMeasurer:
                 scale(scale) {
                     drawImage(
                         dstOffset = position,
-                        image = when(view){
+                        image = when (view) {
                             KillmarkView.axe_killmark -> gameAssets.axe_killmark
                             KillmarkView.revolver_killmark -> gameAssets.revolver_killmark
                             KillmarkView.killmark -> gameAssets.killmark
@@ -332,13 +348,17 @@ fun DrawScope.drawKillmark(killmarkController: KillmarkController, textMeasurer:
                 )
                 drawText(
                     textLayoutResult = text,
-                    topLeft = (position + IntOffset(dstSize.width/2 - text.size.width/2, 0)).toOffset(),
+                    topLeft = (position + IntOffset(
+                        dstSize.width / 2 - text.size.width / 2,
+                        0
+                    )).toOffset(),
                 )
             }
         }
     }
 }
-fun DrawScope.drawAxe(player: Player, axe: Axe,weaponAssets: WeaponAssets) = with(axe) {
+
+fun DrawScope.drawAxe(player: Player, axe: Axe, weaponAssets: WeaponAssets) = with(axe) {
     with(weaponAssets) {
         if (slicePoints.isEmpty()) {
             val weaponPosition = player.position + Offset(
@@ -383,6 +403,7 @@ fun DrawScope.drawAxe(player: Player, axe: Axe,weaponAssets: WeaponAssets) = wit
         }
     }
 }
+
 fun DrawScope.drawEffectsAxe(axe: Axe, weaponAssets: WeaponAssets) = with(axe) {
     if (slicePoints.isNotEmpty()) {
         for (i in 0 until slicePoints.size - 2) {
@@ -393,9 +414,9 @@ fun DrawScope.drawEffectsAxe(axe: Axe, weaponAssets: WeaponAssets) = with(axe) {
                 strokeWidth = i.toFloat().coerceAtMost(15f),
             )
         }
-        if(slicePoints.size > 1) {
+        if (slicePoints.size > 1) {
             rotate(
-                calcAngle(slicePoints.last(), slicePoints[slicePoints.size - 2]) -90f,
+                calcAngle(slicePoints.last(), slicePoints[slicePoints.size - 2]) - 90f,
                 pivot = slicePoints.last()
             ) {
                 drawImage(
@@ -406,32 +427,35 @@ fun DrawScope.drawEffectsAxe(axe: Axe, weaponAssets: WeaponAssets) = with(axe) {
         }
     }
 }
-fun DrawScope.drawRevolver(player: Player,revolver: Revolver, weaponAssets: WeaponAssets) = with(revolver) {
-    val weaponPosition = player.center + Offset(-dstSize.width / 2f, -dstSize.height * 1.8f)
-    drawImage(
-        dstOffset = weaponPosition.round(),
-        dstSize = dstSize,
-        filterQuality = FilterQuality.None,
-        image = when (trend) {
-            true -> weaponAssets.viewRightAnimation[animationIndex]
-            false -> weaponAssets.viewLeftAnimation[animationIndex]
-        }
-    )
-}
-fun DrawScope.drawEffectsRevolver(revolver: Revolver)= with(revolver) {
+
+fun DrawScope.drawRevolver(player: Player, revolver: Revolver, weaponAssets: WeaponAssets) =
+    with(revolver) {
+        val weaponPosition = player.center + Offset(-dstSize.width / 2f, -dstSize.height * 1.8f)
+        drawImage(
+            dstOffset = weaponPosition.round(),
+            dstSize = dstSize,
+            filterQuality = FilterQuality.None,
+            image = when (trend) {
+                true -> weaponAssets.viewRightAnimation[animationIndex]
+                false -> weaponAssets.viewLeftAnimation[animationIndex]
+            }
+        )
+    }
+
+fun DrawScope.drawEffectsRevolver(revolver: Revolver) = with(revolver) {
     shotPoint?.let {
         val currentBulletProgress = bulletProgress
         val strokeWith = if (isHolyShot) 20f else 5f
         val bulletLength = if (isHolyShot) 0.3f else 0.1f
         val bulletColor = if (isHolyShot) Color.Yellow else Color.White
         val end = if (!isHolyShot) it else run {
-            startBullet + (it - startBullet)/ calcDistance(it,startBullet) * 5000f
+            startBullet + (it - startBullet) / calcDistance(it, startBullet) * 5000f
         }
         val start = startBullet
-        if (isHolyShot){
+        if (isHolyShot) {
             drawLine(
                 brush = Brush.linearGradient(
-                    colors = listOf(Color.Transparent,Color.White.copy(0.5f)),
+                    colors = listOf(Color.Transparent, Color.White.copy(0.5f)),
                     start = start,
                     end = end
                 ),
@@ -459,41 +483,45 @@ fun DrawScope.drawEffectsRevolver(revolver: Revolver)= with(revolver) {
         )
     }
 }
-fun DrawScope.drawShotgun(player: Player,shotgun: Shotgun, weaponAssets: WeaponAssets)= with(shotgun) {
-    val weaponPosition = player.center + Offset(-dstSize.width / 2f, -dstSize.height * 1.4f)
-    drawImage(
-        dstOffset = weaponPosition.round(),
-        dstSize = dstSize,
-        filterQuality = FilterQuality.None,
-        image = when (trend) {
-            true -> weaponAssets.viewRightShotgun
-            false -> weaponAssets.viewLeftShotgun
-        }
-    )
-    shotPoint?.let {
-        val currentBulletProgress = bulletProgress
-        drawArc(
-            brush = Brush.radialGradient(
-                (currentBulletProgress + 0.30f).fastCoerceAtMost(1f) to Color.Transparent,
-                (currentBulletProgress + 0.35f).fastCoerceAtMost(1f) to Color.White.copy(alpha = 0.3f),
-                (currentBulletProgress + 0.40f).fastCoerceAtMost(1f) to Color.DarkGray,
-                (currentBulletProgress + 0.45f).fastCoerceAtMost(1f) to Color.Transparent,
-                radius = hitDistance,
-                center = player.center
-            ),
-            startAngle = -45 - 90f,
-            sweepAngle = 90f,
-            useCenter = true,
-            size = Size(hitDistance * 2, hitDistance * 2),
-            topLeft = player.center - Offset(hitDistance, hitDistance)
+
+fun DrawScope.drawShotgun(player: Player, shotgun: Shotgun, weaponAssets: WeaponAssets) =
+    with(shotgun) {
+        val weaponPosition = player.center + Offset(-dstSize.width / 2f, -dstSize.height * 1.4f)
+        drawImage(
+            dstOffset = weaponPosition.round(),
+            dstSize = dstSize,
+            filterQuality = FilterQuality.None,
+            image = when (trend) {
+                true -> weaponAssets.viewRightShotgun
+                false -> weaponAssets.viewLeftShotgun
+            }
         )
+        shotPoint?.let {
+            val currentBulletProgress = bulletProgress
+            drawArc(
+                brush = Brush.radialGradient(
+                    (currentBulletProgress + 0.30f).fastCoerceAtMost(1f) to Color.Transparent,
+                    (currentBulletProgress + 0.35f).fastCoerceAtMost(1f) to Color.White.copy(alpha = 0.3f),
+                    (currentBulletProgress + 0.40f).fastCoerceAtMost(1f) to Color.DarkGray,
+                    (currentBulletProgress + 0.45f).fastCoerceAtMost(1f) to Color.Transparent,
+                    radius = hitDistance,
+                    center = player.center
+                ),
+                startAngle = -45 - 90f,
+                sweepAngle = 90f,
+                useCenter = true,
+                size = Size(hitDistance * 2, hitDistance * 2),
+                topLeft = player.center - Offset(hitDistance, hitDistance)
+            )
+        }
     }
-}
-fun DrawScope.drawEffectsShotgun(shotgun: Shotgun)= with(shotgun) {
+
+fun DrawScope.drawEffectsShotgun(shotgun: Shotgun) = with(shotgun) {
     targetMagnet?.let {
         drawCircle(
             brush = Brush.radialGradient(
-                0f to Color.Yellow.copy(0.05f),
+                0f to Color.Yellow.copy(0.2f),
+                0.1f to Color.Yellow.copy(0.05f),
                 1f to Color.Transparent,
                 center = it,
                 radius = hitDistance,
@@ -504,22 +532,26 @@ fun DrawScope.drawEffectsShotgun(shotgun: Shotgun)= with(shotgun) {
     }
 }
 
-fun DrawScope.drawWeapon(player: Player, weapon: Weapon,weaponAssets: WeaponAssets){
-    when(weapon){
+fun DrawScope.drawWeapon(player: Player, weapon: Weapon, weaponAssets: WeaponAssets) {
+    when (weapon) {
         is Axe -> {
             rotate(weapon.angle, pivot = player.center) {
-                drawAxe(player,weapon,weaponAssets)
+                drawAxe(player, weapon, weaponAssets)
             }
-            drawEffectsAxe(weapon,weaponAssets)
+            drawEffectsAxe(weapon, weaponAssets)
         }
+
         is Revolver -> {
             rotate(weapon.angle, pivot = player.center) {
                 drawRevolver(player, weapon, weaponAssets)
             }
             drawEffectsRevolver(weapon)
         }
-        is Shotgun -> rotate(weapon.angle, pivot = player.center) {
-            drawShotgun(player,weapon,weaponAssets)
+
+        is Shotgun -> {
+            rotate(weapon.angle, pivot = player.center) {
+                drawShotgun(player, weapon, weaponAssets)
+            }
             drawEffectsShotgun(weapon)
         }
     }
