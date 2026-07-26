@@ -8,6 +8,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.example.scrolllist.R
+import com.example.scrolllist.data.GlobalGameSettings
 
 object AudioManager {
     private var soundPool: SoundPool? = null
@@ -27,6 +28,7 @@ object AudioManager {
         musicPlayer = MediaPlayer.create(context, R.raw.best_soundtrack).apply {
             isLooping = true
             setVolume(_musicVolume, _musicVolume)
+//            playbackParams.setSpeed()
         }
 
         val attributes = AudioAttributes.Builder()

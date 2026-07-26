@@ -33,6 +33,7 @@ import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
@@ -46,6 +47,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.rotate
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -70,6 +72,12 @@ fun AnimatedVisibilityScope.Settings(
     modifier: Modifier = Modifier,
     CloseSettings: () -> Unit,
 ) {
+    val contex = LocalContext.current
+    DisposableEffect(Unit) {
+        onDispose {
+            GlobalGameSettings.save(contex)
+        }
+    }
     val topShape = remember {
         GenericShape { size, _ ->
             moveTo(0f, 0f)
