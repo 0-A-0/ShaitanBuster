@@ -92,9 +92,23 @@ private fun getPlayerFrame(player: Player, playerAssets: PlayerAssets): ImageBit
 }
 
 private fun DrawScope.drawPlayer(
-    player: com.example.scrolllist.domain.units.Player,
+    player: Player,
     playerAssets: PlayerAssets
 ) {
+//    if (player.recoil != Offset.Zero){
+//        drawCircle(
+//            brush = Brush.radialGradient(
+//                0f to Color.Transparent,
+//                0.6f to Color.Transparent,
+//                0.7f to Color.White,
+//                1f to Color.Transparent,
+//                center = player.center,
+//                radius = player.recoilHitRadius,
+//            ),
+//            center = player.center,
+//            alpha = 0.5f
+//        )
+//    }
     val colorFilter = if (player.damageEffectAlpha > 0) {
         ColorFilter.tint(
             Color.Red.copy(alpha = player.damageEffectAlpha * 0.8f),

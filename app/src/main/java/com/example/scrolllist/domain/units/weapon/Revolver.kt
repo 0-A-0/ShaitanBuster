@@ -14,6 +14,7 @@ import com.example.scrolllist.domain.utils.isIntersectWithLine
 import com.example.scrolllist.domain.units.enemy.bodies.Body
 import com.example.scrolllist.domain.units.enemy.Enemy
 import com.example.scrolllist.domain.units.enemy.bodies.GhostBody
+import com.example.scrolllist.domain.utils.blazingReflectFor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -25,7 +26,7 @@ class Revolver(
 //    val viewRightAnimation: List<ImageBitmap>,
 //    val viewLeftAnimation: List<ImageBitmap>,
 ) : Weapon {
-    override val minHolyModeUsable: Float = 0.7f
+    override val minHolyModeUsable: Float = 0.1f
     override var holyModeProgress by mutableStateOf(0f)
     override val present_clip: String
         get() = "$clip"
@@ -86,7 +87,7 @@ class Revolver(
         enemies: List<Enemy>,
         bodies: List<Body>,
         onHitEnemy: (Enemy) -> Unit,
-        onHitBody: (Body, Float, Int) -> Unit,
+        onHitBody: (Body, Float, Int, Float) -> Unit,
         holyMode: Boolean
     ){
         if (clip != 0) {
@@ -106,19 +107,20 @@ class Revolver(
                 } else null
 //            var hitCount = 0
             val fixedPlayerCenter = player.center
-            for (i in enemies.indices.reversed()) {
+            enemies.blazingReflectFor { enemy ->
                 if(!holyMode) {
-                    if (/*hitCount >= 3 ||*/ !bulletRect!!.overlaps(enemies[i].collisionRect)) continue
+                    if (/*hitCount >= 3 ||*/ !bulletRect!!.overlaps(enemy.collisionRect)) return@blazingReflectFor
                 }
-                    if (isIntersectWithLine(enemies[i].collisionRect, fixedPlayerCenter, position, holyMode)) {
-                    onHitEnemy(enemies[i])
+                    if (isIntersectWithLine(enemy.collisionRect, fixedPlayerCenter, position, holyMode)) {
+                    onHitEnemy(enemy)
 //                    hitCount++
                 }
             }
-            for (i in bodies.indices.reversed()) {
-                if (bodies[i] is GhostBody) continue
-                if ((holyMode || bulletRect!!.overlaps(bodies[i].collisionRect)) && isIntersectWithLine(bodies[i].collisionRect, fixedPlayerCenter, position, holyMode)) {
-                    onHitBody(bodies[i],angle, if(!holyMode)7 else 10)
+            bodies.blazingReflectFor { body ->
+                if (body is GhostBody) return@blazingReflectFor
+                if ((holyMode || bulletRect!!.overlaps(body.collisionRect)) && isIntersectWithLine(body.collisionRect, fixedPlayerCenter, position, holyMode)) {
+                    if(holyMode) onHitBody(body,angle, 10, 10f)
+                    else onHitBody(body,angle, 7, 5f)
                 }
             }
             if(holyMode) holyModeProgress = (holyModeProgress - minHolyModeUsable).coerceIn(0f,1f)

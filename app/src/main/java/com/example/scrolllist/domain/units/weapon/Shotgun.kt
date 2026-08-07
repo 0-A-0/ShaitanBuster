@@ -18,6 +18,8 @@ import com.example.scrolllist.domain.units.enemy.Enemy
 import com.example.scrolllist.domain.units.enemy.bodies.FixedBody
 import com.example.scrolllist.domain.units.enemy.bodies.GhostBody
 import com.example.scrolllist.domain.units.enemy.Spawner
+import com.example.scrolllist.domain.utils.blazingFor
+import com.example.scrolllist.domain.utils.blazingReflectFor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -40,6 +42,7 @@ class Shotgun(
     override val shootable: Boolean = true
     override val trend: Boolean
         get() = if (angle > 180f) false else true
+    val weaponPower = 100f
     var bulletProgress = 0f
     val durationBulletAnimation = 200f
     var isBulletAimation = false
@@ -83,21 +86,21 @@ class Shotgun(
                     lastTime = currentTime
                     targetMagnet?.let {
                         val power = 700f * holyModeProgress * delta
-                        for (i in enemies.indices) {
-                            if(enemies[i] is Spawner) continue
-                            val distanceX2 = calcDistanceForComparison(it, enemies[i].center)
-                            if (distanceX2 > hitDistance*hitDistance) continue
-                            val dx = it - enemies[i].center
-                            val direction = dx / calcDistance(it, enemies[i].center)
-                            onHitEnemy(enemies[i], direction * power)
+                        enemies.blazingFor { enemy ->
+                            if(enemy is Spawner) return@blazingFor
+                            val distanceX2 = calcDistanceForComparison(it, enemy.center)
+                            if (distanceX2 > hitDistance*hitDistance) return@blazingFor
+                            val dx = it - enemy.center
+                            val direction = dx / calcDistance(it, enemy.center)
+                            onHitEnemy(enemy, direction * power)
                         }
-                        for (i in bodies.indices) {
-                            if(bodies[i] is FixedBody) continue
-                            val distanceX2 = calcDistanceForComparison(it, bodies[i].center)
-                            if (distanceX2 > 500f * 500f) continue
-                            val dx = it - bodies[i].center
-                            val direction = dx / calcDistance(it, bodies[i].center)
-                            onHitBody(bodies[i], direction * power)
+                        bodies.blazingFor { body ->
+                            if(body is FixedBody) return@blazingFor
+                            val distanceX2 = calcDistanceForComparison(it, body.center)
+                            if (distanceX2 > 500f * 500f) return@blazingFor
+                            val dx = it - body.center
+                            val direction = dx / calcDistance(it, body.center)
+                            onHitBody(body, direction * power)
                         }
                         holyModeProgress = (holyModeProgress - 0.2f * delta).coerceIn(0f,1f)
                     }
@@ -115,7 +118,7 @@ class Shotgun(
         enemies: List<Enemy>,
         bodies: List<Body>,
         onHitEnemy: (Enemy) -> Unit,
-        onHitBody: (Body, Float, Int) -> Unit
+        onHitBody: (Body, Float, Int, Float) -> Unit
     ) {
         if (clip != 0) {
             clip -= 1
@@ -123,33 +126,33 @@ class Shotgun(
 
             val minDistance = hitDistance * hitDistance
             val fixedPlayerCenter = player.center
-            for (i in enemies.indices.reversed()) {
-                val distance = calcDistanceForComparison(fixedPlayerCenter, enemies[i].center)
-                if (distance > minDistance) continue
+            enemies.blazingReflectFor { enemy ->
+                val distance = calcDistanceForComparison(fixedPlayerCenter, enemy.center)
+                if (distance > minDistance) return@blazingReflectFor
 
-                val enemyAngle = calcAngle(enemies[i].center, fixedPlayerCenter)
+                val enemyAngle = calcAngle(enemy.center, fixedPlayerCenter)
                 val diffAngle = abs(enemyAngle - angle)
                 val finalDiffAngle = if (diffAngle > 180f) 360f - diffAngle else diffAngle
 
                 if (finalDiffAngle <= 45f) {
-                    onHitEnemy(enemies[i])
+                    onHitEnemy(enemy)
                 }
             }
 
-            for (i in bodies.indices.reversed()) {
-                val distance = calcDistanceForComparison(fixedPlayerCenter, bodies[i].center)
-                if (bodies[i] is GhostBody || calcDistanceForComparison(
+            bodies.blazingReflectFor { body ->
+                val distance = calcDistanceForComparison(fixedPlayerCenter, body.center)
+                if (body is GhostBody || calcDistanceForComparison(
                         fixedPlayerCenter,
-                        bodies[i].center
+                        body.center
                     ) > minDistance
-                ) continue
+                ) return@blazingReflectFor
 
-                val bodyAngle = calcAngle(bodies[i].center, fixedPlayerCenter)
+                val bodyAngle = calcAngle(body.center, fixedPlayerCenter)
                 val diffAngle = abs(bodyAngle - angle)
                 val finalDiffAngle = if (diffAngle > 180f) 360f - diffAngle else diffAngle
 
                 if (finalDiffAngle <= 45f) {
-                    onHitBody(bodies[i], bodyAngle, calculatePowerByDist(distance, minDistance))
+                    onHitBody(body, bodyAngle, calculatePowerByDist(distance, minDistance), weaponPower)
                 }
             }
         }

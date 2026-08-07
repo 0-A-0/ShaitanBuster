@@ -1,6 +1,5 @@
 package com.example.scrolllist.ui.screens.game
 
-import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloat
@@ -19,12 +18,11 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -43,23 +41,23 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.drawscope.rotate
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.PointerEvent
 import androidx.compose.ui.input.pointer.PointerInputChange
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.center
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.toOffset
 import com.example.scrolllist.R
-import com.example.scrolllist.domain.units.weapon.Axe
 import com.example.scrolllist.domain.units.weapon.Weapon
 import com.example.scrolllist.domain.units.weapon.WeaponType
 import com.example.scrolllist.domain.utils.calcDistance
@@ -184,82 +182,40 @@ fun ChandeWeaponButton(
 }
 
 @Composable
-fun AttackAxeButtons(
-    rotationAxe: (Boolean) -> Unit,
-    axe: Axe,
+fun AxeButtons(
+    changeAxeTrend: (Boolean) -> Unit,
+    trend: Boolean,
     modifier: Modifier = Modifier,
 ) {
-    var isHoldL by remember { mutableStateOf(false) }
-    var isHoldR by remember { mutableStateOf(false) }
-    val animatedRotationL by animateFloatAsState(
-        targetValue = if (isHoldL) -360f else 0f,
-        animationSpec = tween(
-            durationMillis = 5000,
-            easing = LinearEasing
-        ),
-        label = "press_rotation"
-    )
-    val animatedRotationR by animateFloatAsState(
-        targetValue = if (isHoldR) -360f else 0f,
-        animationSpec = tween(
-            durationMillis = 5000,
-            easing = LinearEasing
-        ),
-        label = "press_rotation"
-    )
-    Row(
+    val colorMatrix = remember {
+        ColorMatrix(
+            floatArrayOf(
+                1f, 0f, 0f, 0f, 0f,
+                1f, 0f, 0f, 0f, 0f,
+                0f, 0f, 0f, 0f, 0f,
+                0f, 0f, 0f, 1f, 0f
+            )
+        )
+    }
+    Box(
         modifier = modifier,
-        horizontalArrangement = Arrangement.End,
+        contentAlignment = Alignment.Center
     ) {
         Image(
             modifier = Modifier
-                .padding(bottom = 100.dp)
-                .weight(1f)
+                .fillMaxWidth(0.5f)
                 .aspectRatio(1f)
-                .scale(1f)
-                .pointerInput(Unit) {
+                .scale( if(trend) -1f else 1f, 1f)
+                .pointerInput(trend) {
                     detectTapGestures(
-                        onPress = {
-                            axe.trend = false
-                            isHoldL = true
-                            rotationAxe(isHoldL)
-                            tryAwaitRelease()
-                            isHoldL = false
-                            rotationAxe(isHoldL)
+                        onTap = {
+                            changeAxeTrend(!trend)
                         }
                     )
-                }
-                .graphicsLayer {
-                    rotationZ = animatedRotationL
                 },
             alpha = 0.8f,
             painter = painterResource(R.drawable.left_attack),
-            contentDescription = null
-        )
-        Spacer(Modifier.width(10.dp))
-        Image(
-            modifier = Modifier
-                .padding(bottom = 100.dp, end = 5.dp)
-                .weight(1f)
-                .aspectRatio(1f)
-                .scale(-1f, 1f)
-                .pointerInput(Unit) {
-                    detectTapGestures(
-                        onPress = {
-                            axe.trend = true
-                            isHoldR = true
-                            rotationAxe(isHoldR)
-                            tryAwaitRelease()
-                            isHoldR = false
-                            rotationAxe(isHoldR)
-                        }
-                    )
-                }
-                .graphicsLayer {
-                    rotationZ = animatedRotationR
-                },
-            alpha = 0.8f,
-            painter = painterResource(R.drawable.left_attack),
+            colorFilter = if(trend) ColorFilter.colorMatrix( colorMatrix = colorMatrix) else null,
             contentDescription = null
         )
     }
@@ -395,5 +351,24 @@ fun ModeIndicator(
                 }
             }
         }
+    )
+}
+
+@Preview
+@Composable
+fun axeButton(){
+    AxeButtons(
+        modifier = Modifier.fillMaxSize(),
+        trend = true,
+        changeAxeTrend = {}
+    )
+}
+@Preview
+@Composable
+fun axeButtonFalse(){
+    AxeButtons(
+        modifier = Modifier.fillMaxSize(),
+        trend = false,
+        changeAxeTrend = {}
     )
 }

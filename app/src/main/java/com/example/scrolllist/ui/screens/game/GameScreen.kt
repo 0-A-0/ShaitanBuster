@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Snackbar
@@ -167,13 +168,25 @@ fun GameScreenController(
                     Modifier
                         .fillMaxSize()
                         .pointerInput(weapon) {
+                            detectDragGestures(
+                                onDragStart = {offset ->
+                                    viewModel.engine.revolverTap(offset)
+                                },
+                                onDrag = { change, dragAmount ->
+                                    if (dragAmount.getDistance() > 50f) {
+                                        viewModel.engine.revolverOnLongPress(change.position)
+                                    }
+                                },
+                            )
+                        }
+                        .pointerInput(weapon) {
                             detectTapGestures(
                                 onTap = { offset ->
                                     viewModel.engine.revolverTap(offset)
                                 },
-                                onLongPress = { offset ->
-                                    viewModel.engine.revolverOnLongPress(offset)
-                                }
+//                                onLongPress = { offset ->
+//                                    viewModel.engine.revolverOnLongPress(offset)
+//                                }
                             )
                         }
 
@@ -345,14 +358,16 @@ fun GameScreenController(
                     }
                     Column(
                         modifier = Modifier.weight(1f),
+                        horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         when (weapon) {
-                            is Axe -> AttackAxeButtons(
-                                modifier = Modifier,
-                                rotationAxe = { _isHold ->
-                                    viewModel.engine.axeOnRotate(_isHold)
+                            is Axe -> AxeButtons(
+                                modifier = Modifier.fillMaxWidth().padding(bottom = 50.dp).aspectRatio(1f),
+                                changeAxeTrend = { newTrend ->
+                                    viewModel.engine.changeAxeRotate(newTrend)
+                                    viewModel.axeTrend = newTrend
                                 },
-                                axe = viewModel.engine.axe
+                                trend = viewModel.axeTrend
                             )
 
                             else -> {}

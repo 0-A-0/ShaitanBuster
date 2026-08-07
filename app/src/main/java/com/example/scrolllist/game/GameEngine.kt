@@ -213,11 +213,10 @@ class GameEngine(
                 )
             }.toMutableList()
             // удаление ящиков в важных точках
-            for (i in list.indices.reversed()) {
-                if (list[i].collisionRect.overlaps(player.collisionRect) || list[i].collisionRect.overlaps(
+            list.blazingRemove { box ->
+                box.collisionRect.overlaps(player.collisionRect) || box.collisionRect.overlaps(
                         firePoint.collisionRect
                     )
-                ) list.removeAt(i)
             }
             list
         }
@@ -289,6 +288,7 @@ class GameEngine(
                 } else false
             }
             player.checkDeath(DeathPlayer, _enemies, kills)
+//            player.hitByRecoil()
             _enemies.blazingReflectFor { enemy ->
                 enemy.update(deltaTime, player.position)
                 if (!mapBox.contains(enemy.position.x, enemy.position.y)) {
@@ -348,8 +348,8 @@ class GameEngine(
         }
     }
 
-    fun onHitBody(body: Body, angle: Float, power: Int, weaponPower: Float? = null) {
-        body.addBias(angle = angle, power = power)
+    fun onHitBody(body: Body, angle: Float, power: Int, weaponPower: Float = 1f) {
+        body.addBias(angle = angle, power = power, powerWeapon = weaponPower)
         addBlood(
             Blood(
                 power = power,
@@ -365,7 +365,7 @@ class GameEngine(
         this.angle = calcAngle(position, player.center)
         var killCount = 0
         this.fire(
-            onSuccessAction = { trigger++ },
+            onSuccessAction = { },
             position = position,
             player = player,
             enemies = _enemies,
@@ -400,10 +400,42 @@ class GameEngine(
             },
             onHitBody = ::onHitBody
         )
-        onKill(killCount)
+        if(!isHoly) onKill(killCount)
     }
-
-    fun Shotgun.doFire(position: Offset, powerWeapon: Float = 30f) {
+//    делает игрока неуязвимым при абЪюзе(
+//    fun Player.hitByRecoil(){
+//        if(recoil != Offset.Zero) {
+//            val hitDistance = recoilHitRadius * recoilHitRadius
+//            val playerCenter = center
+//            _enemies.blazingReflectFor { enemy ->
+//                val enemyCenter = enemy.center
+//                if(calcDistanceForComparison(enemyCenter,playerCenter) <= hitDistance){
+//                    if (enemy.killable) {
+//                        killEnemy(enemy)
+//                        kills += enemy.killWeight
+//                        if (Random.nextFloat() < 0.1f) {
+//                            val ammunition = Ammunition(
+//                                value = 12,
+//                                type = AmmunitionType.Cartridges,
+//                                startPosition = enemyCenter
+//                            )
+//                            addAmmunition(ammunition)
+//                        }
+//                    } else {
+//                        scope.launch { enemy.onHitEffect() }
+//                    }
+//                }
+//            }
+//            _bodies.blazingReflectFor { body ->
+//                val bodyCenter = body.center
+//                if(calcDistanceForComparison(bodyCenter,playerCenter) <= hitDistance){
+//                    val angle = calcAngle(bodyCenter,playerCenter)
+//                    onHitBody(body,angle,5,5f)
+//                }
+//            }
+//        }
+//    }
+    fun Shotgun.doFire(position: Offset) {
         this.angle = calcAngle(position, player.center)
         this.animateShotgun(position)
         var killCount = 0
@@ -428,24 +460,7 @@ class GameEngine(
                     scope.launch { enemy.onHitEffect() }
                 }
             },
-            onHitBody = { body, angle, power ->
-                body.addBias(
-                    angle = angle,
-                    power = power,
-                    powerWeapon = powerWeapon
-                )
-                addBlood(
-                    Blood(
-                        power = power,
-                        position = body.position + Offset(
-                            0f,
-                            -body.dstSize.height.toFloat()
-                        ),
-                        pivot = body.center,
-                        angle = angle
-                    )
-                )
-            }
+            onHitBody = ::onHitBody
         )
         onKill(killCount)
         if (killCount > 1) {
@@ -455,6 +470,7 @@ class GameEngine(
             )
             killmarkController.startAnimation(newKillmark)
         }
+        player.startRecoil(position)
     }
 
     fun revolverTap(offset: Offset) {
@@ -495,7 +511,6 @@ class GameEngine(
             shotgun.stopAction()
             shotgun.doFire(
                 position = shotgun.targetMagnet ?: Offset.Zero,
-                powerWeapon = 50f
             )
             shotgun.targetMagnet = null
         }
@@ -546,7 +561,6 @@ class GameEngine(
                         AudioManager.play(AudioManager.SoundType.AXE_HIT)
                         killEnemy(enemy)
                         kills += enemy.killWeight
-                        axe.onKill(1)
                         if (Random.nextFloat() < 0.3f) {
                             val newKillmark = Killmark(
                                 view = KillmarkView.axe_killmark,
@@ -615,42 +629,8 @@ class GameEngine(
         axe.slicePoints.clear()
     }
 
-    fun axeOnRotate(_isHold: Boolean) {
-        axe.rotationAxe(
-            isHold = _isHold,
-            player = player,
-            enemies = _enemies,
-            bodies = _bodies,
-            onHitEnemy = { enemy: Enemy ->
-                if (enemy.killable) {
-                    AudioManager.play(AudioManager.SoundType.AXE_HIT)
-                    killEnemy(enemy)
-                    kills += enemy.killWeight
-                    axe.onKill(1)
-                    if (Random.nextFloat() < 0.3f) {
-                        val newKillmark = Killmark(
-                            view = KillmarkView.axe_killmark,
-                        )
-                        killmarkController.startAnimation(newKillmark)
-                        val ammunition = when (axe.trend) {
-                            true -> Ammunition(
-                                value = 12,
-                                type = AmmunitionType.Cartridges,
-                                startPosition = enemy.center
-                            )
-
-                            false -> Ammunition(
-                                value = 5,
-                                type = AmmunitionType.Pellets,
-                                startPosition = enemy.center
-                            )
-                        }
-                        addAmmunition(ammunition)
-                    }
-                } else scope.launch { enemy.onHitEffect() }
-            },
-            onHitBody = ::onHitBody,
-        )
+    fun changeAxeRotate(newTrend: Boolean) {
+        axe.trend = newTrend
     }
 
     suspend fun startSpawn() = with(levelStates) {

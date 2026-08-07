@@ -15,7 +15,9 @@ import com.example.scrolllist.domain.utils.checkNotCollision
 import com.example.scrolllist.domain.objects.BoxObject
 import com.example.scrolllist.domain.units.enemy.Enemy
 import com.example.scrolllist.domain.units.enemy.EnemyType
+import com.example.scrolllist.domain.utils.calcDistance
 import kotlin.math.abs
+import kotlin.math.pow
 
 @Stable
 class Player(
@@ -31,6 +33,10 @@ class Player(
     }
     var indexFrame = 0
     private var delta = Offset.Zero
+    var recoil = Offset.Zero
+        private set
+    val recoilFriction = 0.85f
+    val recoilHitRadius = dstSize.width*0.8f
     var hitPoint by mutableIntStateOf(100)
     var stopTrend = PlayerTrend.Back
     var trend = PlayerTrend.Stop
@@ -38,12 +44,12 @@ class Player(
 //    private var lastTrend = PlayerTrend.Stop
 
     //    var trendCombo  = mutableListOf<PlayerTrend>()
-    private var lastDamageTimeAccumulator = 0f
+    val saveDelay = 500f
+    private var lastDamageTimeAccumulator = saveDelay
     private var lastBlindTimeAccumulator = 0f
     private var animationTime = Accumulator(100f)
     var isBlind by mutableStateOf(false)
     var damageEffectAlpha = 0f
-    val saveDelay = 500f
     val center: Offset
         get() = position + Offset(dstSize.width / 2f, dstSize.height / 2f)
     override val indexZ: Float
@@ -90,14 +96,17 @@ class Player(
             }
         }
     }
+    fun startRecoil(shotPoint:Offset){
+        recoil = (position - shotPoint) * 25f / calcDistance(position,shotPoint)
+    }
     fun update(deltaTime: Float, objects: List<BoxObject>) {
         lastDamageTimeAccumulator += deltaTime
-        val step = delta * deltaTime / 25f
-//        if (lastTrend != trend) {
-//            indexFrame = 0
-//            animationTime.reset()
-//        }
+        if( recoil != Offset.Zero) {
+            if (recoil.getDistance() < 5f) recoil = Offset.Zero
+            else recoil *= recoilFriction.pow(deltaTime / 16.6f)
+        }
         if (trend != PlayerTrend.Stop) {
+            val step = (recoil + delta) * deltaTime / 25f
             if (objects
                     .all {
                         checkNotCollision(
@@ -133,6 +142,20 @@ class Player(
                     }
                 }
                 PlayerTrend.Stop -> {}
+            }
+        } else {
+            if (recoil.getDistance() > 0.1f){
+                val step = recoil * deltaTime / 25f
+                if (objects
+                        .all {
+                            checkNotCollision(
+                                getNextRect(step),
+                                it.collisionRect
+                            )
+                        }
+                ) {
+                    position += step
+                }
             }
         }
         if (isBlind) {

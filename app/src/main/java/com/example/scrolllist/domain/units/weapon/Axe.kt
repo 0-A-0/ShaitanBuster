@@ -14,6 +14,8 @@ import com.example.scrolllist.domain.utils.isIntersectWithLine
 import com.example.scrolllist.domain.units.enemy.bodies.Body
 import com.example.scrolllist.domain.units.enemy.Enemy
 import com.example.scrolllist.domain.units.enemy.bodies.GhostBody
+import com.example.scrolllist.domain.utils.blazingFor
+import com.example.scrolllist.domain.utils.blazingReflectFor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -44,7 +46,7 @@ class Axe(
         bodies: List<Body>,
         enemies: List<Enemy>,
         onHitEnemy: (Enemy) -> Unit,
-        onHitBody: (Body, Float, Int) -> Unit
+        onHitBody: (Body, Float, Int, Float) -> Unit
     ){
         var totalLength = 0f
         for (i in 0 until slicePoints.size - 1) {
@@ -52,16 +54,16 @@ class Axe(
         }
         if(totalLength > 10_000f){
         slicePoints.windowed(size = 2, step = 1).forEach { (start, end) ->
-            for (i in enemies.indices.reversed()) {
-                if (isIntersectWithLine(enemies[i].collisionRect, start, end)) {
-                    onHitEnemy(enemies[i])
+            enemies.blazingReflectFor { enemy ->
+                if (isIntersectWithLine(enemy.collisionRect, start, end)) {
+                    onHitEnemy(enemy)
                 }
             }
         }
             slicePoints.windowed(size = 2, step = 1).forEach { (start, end) ->
-                for (i in bodies.indices.reversed()) {
-                    if (isIntersectWithLine(bodies[i].collisionRect, start, end)) {
-                        onHitBody(bodies[i], Random.nextFloat() * 360f,  Random.nextInt(11) )
+                bodies.blazingReflectFor { body ->
+                    if (isIntersectWithLine(body.collisionRect, start, end)) {
+                        onHitBody(body, Random.nextFloat() * 360f,  Random.nextInt(11), 5f )
                     }
                 }
             }
@@ -78,7 +80,7 @@ class Axe(
         enemies: List<Enemy>,
         bodies: List<Body>,
         onHitEnemy: (Enemy) -> Unit,
-        onHitBody: (Body, Float, Int) -> Unit
+        onHitBody: (Body, Float, Int, Float) -> Unit
     ) {
         currentJob?.cancel()
         if (slicePoints.isNotEmpty()) return
@@ -109,13 +111,12 @@ class Axe(
         enemies: List<Enemy>,
         bodies: List<Body>,
         onHitEnemy: (Enemy) -> Unit,
-        onHitBody: (Body, Float, Int) -> Unit
+        onHitBody: (Body, Float, Int, Float) -> Unit
     ) {
         val stop = 2f
         val pCenter = player.center
 
-        for (i in enemies.indices.reversed()) {
-            val enemy = enemies[i]
+        enemies.blazingReflectFor { enemy ->
             if (calcDistanceForComparison(pCenter, enemy.center) <= hitDistanceX2) {
                 val enemyAngle = if (trend) calcAngle(enemy.center, pCenter)
                 else -(360f - calcAngle(enemy.center, pCenter))
@@ -123,7 +124,7 @@ class Axe(
                 if (speed > 25f) {
                     onHitEnemy(enemy)
                     speed -= (stop - 1f)
-                    continue
+                    return@blazingReflectFor
                 }
 
                 val diffAngle = abs(enemyAngle - angle)
@@ -140,15 +141,14 @@ class Axe(
             }
         }
 
-        for (i in bodies.indices.reversed()) {
-            val body = bodies[i]
+        bodies.blazingReflectFor { body ->
             if (body !is GhostBody && calcDistanceForComparison(pCenter, body.center) <= hitDistanceX2) {
                 val bodyAngle = if (trend) calcAngle(body.center, pCenter)
                 else -(360f - calcAngle(body.center, pCenter))
 
                 val hitAngle = if (trend) bodyAngle + 90f else bodyAngle - 90f
                 val power = caclAxePower(speed)
-                onHitBody(body, hitAngle, power)
+                onHitBody(body, hitAngle, power, 10f)
             }
         }
     }
