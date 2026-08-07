@@ -9,6 +9,7 @@ import androidx.compose.foundation.gestures.waitForUpOrCancellation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
@@ -23,6 +24,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithCache
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.BlendMode
@@ -35,6 +37,7 @@ import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.drawscope.withTransform
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.imageResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
@@ -68,6 +71,10 @@ fun StartScreen(
                     topLeft = Offset(0f, 0f)
                 )
                 drawContent()
+                drawRect(
+                    color = Color(0xFF411F1F),
+                    blendMode = BlendMode.ColorBurn
+                )
             },
     ) {
 
@@ -120,6 +127,7 @@ fun StartScreen(
                             size = Size(widthRect, heightRect),
                             topLeft = Offset(x, y)
                         )
+                        drawContent()
 //                        drawImage(
 //                            image = hat,
 //                            topLeft = Offset((size.width - hat.width)/2f,-size.height*0.05f)
@@ -163,7 +171,7 @@ fun StartScreen(
                             }
                             currentFill += grassStep
                         }
-                        drawContent()
+//                        drawContent()
                     }
                 },
         ) {
@@ -184,6 +192,16 @@ fun StartScreen(
                 Text(
                     "Бесконечный режим",
                     fontSize = 20.sp
+                )
+            }
+            Spacer(Modifier.fillMaxHeight(0.45f))
+            MyButton(
+                onClick = {},
+                modifier = Modifier.rotate(30f)
+            ) {
+                Text(
+                    "    *    ",
+                    fontSize = 14.sp
                 )
             }
         }
@@ -252,6 +270,7 @@ fun AnimatedHelpText(modifier: Modifier = Modifier) {
         text = helpText,
         textAlign = TextAlign.Center,
         fontSize = 14.sp,
+        color = colorResource(R.color.content),
         modifier = modifier.graphicsLayer { this.alpha = alpha.value }
     )
 }
