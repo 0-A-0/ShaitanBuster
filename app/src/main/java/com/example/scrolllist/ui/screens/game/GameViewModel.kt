@@ -15,7 +15,6 @@ import kotlinx.coroutines.SupervisorJob
 
 class GameViewModel(
     application: Application,
-    val DeathPlayer: (Int) -> Unit,
     val WinPlayer: () -> Unit,
     var canvasWidth: Float,
     var canvasHeight: Float,
@@ -41,7 +40,7 @@ class GameViewModel(
 //        }
     }
 
-    fun startGame(newMode: Int) {
+    fun startGame(newMode: Int, DeathPlayer: (Int) -> Unit) {
         if (isActualGame) return
         mode = newMode
         engine = GameEngine(gameAssets,scope,DeathPlayer,WinPlayer,canvasWidth,canvasHeight,newMode)

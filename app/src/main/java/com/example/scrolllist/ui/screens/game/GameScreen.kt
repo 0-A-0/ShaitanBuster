@@ -91,7 +91,6 @@ fun GameScreenController(
                 canvasWidth = width,
                 canvasHeight = height,
                 mode = mode,
-                DeathPlayer = DeathPlayer,
                 WinPlayer = WinPlayer,
             )
         }
@@ -141,7 +140,7 @@ fun GameScreenController(
     val zoom = { viewModel.engine.zoom }
     val trigger = { viewModel.engine.trigger }
     LaunchedEffect(Unit) {
-        viewModel.startGame(newMode = mode)
+        viewModel.startGame(newMode = mode,DeathPlayer = DeathPlayer)
         while (true) {
             TimeManager.isTimePaused.first { isPaused -> !isPaused }
             withFrameNanos { currentTime ->
