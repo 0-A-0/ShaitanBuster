@@ -107,7 +107,7 @@ fun GameOver(RestartGame: () -> Unit, modifier: Modifier = Modifier /*time:Time*
                     filterQuality = FilterQuality.None,
                 )
                 drawImage(
-                    dstOffset = (center + Offset(200f + prop, -20f) - Offset(
+                    dstOffset = (center + Offset(50f + prop, -20f) - Offset(
                         enemy.width / 2f,
                         enemy.height / 2f
                     )).round(),
@@ -227,7 +227,7 @@ fun GameOverInfinity(
             fontSize = 16.sp,
         )
         Text(
-            text = "Вы способны на большее",
+            text = "Скорее всего, это не дети",
             fontSize = 16.sp,
         )
         MyButton(
