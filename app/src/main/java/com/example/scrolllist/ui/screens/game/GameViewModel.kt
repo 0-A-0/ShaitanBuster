@@ -6,12 +6,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.AndroidUiDispatcher
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.application
+import com.example.scrolllist.data.database.AppDatabase
 import com.example.scrolllist.managers.AudioManager
 import com.example.scrolllist.managers.TimeManager
 import com.example.scrolllist.game.GameEngine
 import com.example.scrolllist.ui.assets.GameAssets
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
 
 class GameViewModel(
     application: Application,
@@ -25,6 +28,7 @@ class GameViewModel(
     val scope = CoroutineScope(AndroidUiDispatcher.Main + SupervisorJob())
     var axeTrend by mutableStateOf(true)
     var isActualGame by mutableStateOf(false)
+    val userTrackDao = AppDatabase.getInstance(application).userTrackDao()
     lateinit var engine: GameEngine
 
     init {
@@ -42,9 +46,21 @@ class GameViewModel(
 
     fun startGame(newMode: Int, DeathPlayer: (Int) -> Unit) {
         if (isActualGame) return
-        mode = newMode
-        engine = GameEngine(gameAssets,scope,DeathPlayer,WinPlayer,canvasWidth,canvasHeight,newMode)
-        isActualGame = true
+            mode = newMode
+            scope.launch {
+                val uriString = userTrackDao.getChosenTrack()?.uri
+                AudioManager.setActualUserTrack(application, uriString)
+            }
+            engine = GameEngine(
+                gameAssets,
+                scope,
+                DeathPlayer,
+                WinPlayer,
+                canvasWidth,
+                canvasHeight,
+                newMode
+            )
+            isActualGame = true
     }
 
     fun resetGame() {

@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -32,7 +33,6 @@ android {
         }
         create("profile") {
             initWith(getByName("release"))
-            // Разрешаем профилирование, но сохраняем скорость релиза
             signingConfig = signingConfigs.getByName("debug")
             matchingFallbacks.add("release")
             isProfileable = true
@@ -59,6 +59,13 @@ android {
 }
 
 dependencies {
+//    implementation(libs.androidx.sqlite.framework.android)
+    val roomVersion = "2.6.1"
+
+    ksp("androidx.room:room-compiler:$roomVersion")
+
+    implementation("androidx.room:room-runtime:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion")
     implementation("androidx.datastore:datastore-preferences:1.1.1")
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.androidx.core.ktx)

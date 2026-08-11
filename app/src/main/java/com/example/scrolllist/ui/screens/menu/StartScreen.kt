@@ -1,7 +1,15 @@
 package com.example.scrolllist.ui.screens.menu
 
 import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.animateValue
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.keyframes
+import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.awaitFirstDown
@@ -57,8 +65,24 @@ import kotlin.random.Random
 fun StartScreen(
     StartGame: () -> Unit,
     StartInfinityGame: () -> Unit,
+    EnterAudioLobby: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val infiniteTransition = rememberInfiniteTransition()
+    val timesOfDay by infiniteTransition.animateFloat(
+        initialValue = 0f,
+        targetValue = 1f,
+        animationSpec = infiniteRepeatable(
+            animation = keyframes {
+                durationMillis = 15_000
+                0f at 0
+                0f at 3_000
+                1f at 6_000 using FastOutSlowInEasing
+                1f at 15_000
+            },
+            repeatMode = RepeatMode.Reverse,
+        )
+    )
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = modifier
@@ -73,7 +97,8 @@ fun StartScreen(
                 drawContent()
                 drawRect(
                     color = Color(0xFF411F1F),
-                    blendMode = BlendMode.ColorBurn
+                    blendMode = BlendMode.ColorBurn,
+                    alpha = timesOfDay
                 )
             },
     ) {
@@ -196,11 +221,11 @@ fun StartScreen(
             }
             Spacer(Modifier.fillMaxHeight(0.45f))
             MyButton(
-                onClick = {},
+                onClick = EnterAudioLobby,
                 modifier = Modifier.rotate(30f)
             ) {
                 Text(
-                    "    *    ",
+                    "Аудио",
                     fontSize = 14.sp
                 )
             }
@@ -281,5 +306,5 @@ fun AnimatedHelpText(modifier: Modifier = Modifier) {
 )
 @Composable
 fun StartScreenPreview() {
-    StartScreen(StartGame = {}, StartInfinityGame = {}, modifier = Modifier.fillMaxSize())
+    StartScreen(StartGame = {}, StartInfinityGame = {}, EnterAudioLobby = {}, modifier = Modifier.fillMaxSize())
 }

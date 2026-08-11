@@ -4,11 +4,11 @@ import android.content.Context
 import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.media.SoundPool
+import android.net.Uri
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.example.scrolllist.R
-import com.example.scrolllist.data.GlobalGameSettings
 
 object AudioManager {
     private var soundPool: SoundPool? = null
@@ -24,7 +24,6 @@ object AudioManager {
 
     fun init(context: Context) {
         if (soundPool != null || musicPlayer != null) return
-
         musicPlayer = MediaPlayer.create(context, R.raw.best_soundtrack).apply {
             isLooping = true
             setVolume(_musicVolume, _musicVolume)
@@ -79,6 +78,25 @@ object AudioManager {
     fun setMusicVolume(volume:Float){
         _musicVolume = volume
         musicPlayer?.setVolume(_musicVolume, _musicVolume)
+    }
+
+    fun setActualUserTrack(context: Context, uriString: String?) {
+        val userTrack = if (!uriString.isNullOrEmpty()) {
+            try {
+                Uri.parse(uriString)
+            } catch (e: Exception) {
+                Uri.parse("android.resource://${context.packageName}/${R.raw.best_soundtrack}")
+            }
+        } else {
+            Uri.parse("android.resource://${context.packageName}/${R.raw.best_soundtrack}")
+        }
+        musicPlayer?.apply {
+            reset()
+            setDataSource(context, userTrack)
+            prepare()
+            isLooping = true
+            setVolume(_musicVolume, _musicVolume)
+        }
     }
 
     fun release() {

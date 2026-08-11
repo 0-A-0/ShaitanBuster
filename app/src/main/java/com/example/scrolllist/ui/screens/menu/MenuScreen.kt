@@ -18,6 +18,7 @@ import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Color
 import com.example.scrolllist.data.GlobalGameSettings
+import com.example.scrolllist.ui.screens.audio_lobby.AudioLobby
 import com.example.scrolllist.ui.screens.game.GameScreenController
 import com.example.scrolllist.ui.screens.results.GameOver
 import com.example.scrolllist.ui.screens.results.GameOverInfinity
@@ -76,6 +77,7 @@ fun Menu(
             0 -> StartScreen(
                 StartGame = { gameState = 1 },
                 StartInfinityGame = { gameState = 2 },
+                EnterAudioLobby = {gameState = 6},
                 modifier = Modifier
                     .fillMaxSize()
                     .background(MaterialTheme.colorScheme.background)
@@ -110,11 +112,14 @@ fun Menu(
                 kills,
                 modifier = defaultModifier /*time*/
             )
-
-            else -> GameWin(
+            5 -> GameWin(
                 RestartGame = { gameState = 0 },
                 kills,
                 modifier = defaultModifier /*time*/
+            )
+            else -> AudioLobby(
+                exit = {gameState = 0},
+                modifier = Modifier.fillMaxSize()
             )
         }
     }
