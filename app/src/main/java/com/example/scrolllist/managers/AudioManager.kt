@@ -9,6 +9,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import com.example.scrolllist.R
+import kotlin.random.Random
 
 object AudioManager {
     private var soundPool: SoundPool? = null
@@ -63,8 +64,12 @@ object AudioManager {
         if (!isPaused) musicPlayer?.start() else musicPlayer?.pause()
     }
     fun stopMusic(){
-        musicPlayer?.pause()
-        musicPlayer?.seekTo(0)
+        musicPlayer?.apply {
+            pause()
+            val maxTarget = duration - 45_000
+            if (maxTarget > 0) seekTo(Random.nextInt(maxTarget))
+            else seekTo(0)
+        }
     }
     fun setMusicSpeed(speed:Float){
         musicPlayer?.let {
