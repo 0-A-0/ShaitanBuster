@@ -35,6 +35,7 @@ class GameViewModel(
         gameAssets.loadAll(application)
         AudioManager.init(application)
     }
+
     fun ChangeZoom(newZoom: Float, unsucsessAction: () -> Unit) {
 //        if (canvasWidth / newZoom <= mapSize.width && canvasHeight / newZoom <= mapSize.height) {
 //            zoom = newZoom
@@ -46,21 +47,22 @@ class GameViewModel(
 
     fun startGame(newMode: Int, DeathPlayer: (Int) -> Unit) {
         if (isActualGame) return
-            mode = newMode
-            scope.launch {
-                val uriString = userTrackDao.getChosenTrack()?.uri
-                AudioManager.setActualUserTrack(application, uriString)
-            }
-            engine = GameEngine(
-                gameAssets,
-                scope,
-                DeathPlayer,
-                WinPlayer,
-                canvasWidth,
-                canvasHeight,
-                newMode
-            )
-            isActualGame = true
+        mode = newMode
+        scope.launch {
+            val uriString = userTrackDao.getChosenTrack()?.uri
+            AudioManager.setActualUserTrack(application, uriString)
+        }
+        engine = GameEngine(
+            gameAssets,
+            scope,
+            DeathPlayer,
+            WinPlayer,
+            canvasWidth,
+            canvasHeight,
+            newMode
+        )
+        axeTrend = engine.axe.trend
+        isActualGame = true
     }
 
     fun resetGame() {
