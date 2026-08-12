@@ -4,6 +4,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import kotlin.math.atan2
 import kotlin.math.sqrt
+import kotlin.time.Duration.Companion.seconds
 
 fun calcDistance(startPoint: Offset, endPoint: Offset): Float {
     return sqrt(
@@ -102,4 +103,12 @@ inline fun <T> List<T>.blazingReflectFor(action:(T) -> Unit){
         action(this[i])
         i--
     }
+}
+
+fun Long.formatDuration(): String {
+    val totalSeconds = this / 1000
+    val minutes = totalSeconds / 60
+    val seconds = totalSeconds % 60
+
+    return String.format("%d:%02d", minutes, seconds)
 }

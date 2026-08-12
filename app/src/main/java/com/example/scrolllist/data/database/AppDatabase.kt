@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import com.example.scrolllist.data.user_tracks.UserTrack
 import com.example.scrolllist.data.user_tracks.UserTrackDao
 
-@Database(entities = [UserTrack::class], version = 1, exportSchema = false)
+@Database(entities = [UserTrack::class], version = 2, exportSchema = false)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun userTrackDao(): UserTrackDao
 
@@ -21,6 +21,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "database-name"
                 )
+                    .fallbackToDestructiveMigration()
                     .build().also { instance = it }
             }
         }

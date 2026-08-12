@@ -53,20 +53,20 @@ class AudioLobbyViewModel(application: Application) : AndroidViewModel(applicati
                     Intent.FLAG_GRANT_READ_URI_PERMISSION
                 )
                 var name = ""
-//                var duration = ""
+                var duration = ""
                 val retriever = MediaMetadataRetriever()
                 try {
                     retriever.setDataSource(application, uri)
                     name = retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_TITLE)
                         ?: "anonymous"
-//                    duration =
-//                        retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION).toString()
+                    duration =
+                        retriever.extractMetadata(MediaMetadataRetriever.METADATA_KEY_DURATION).toString()
                 } finally {
                     retriever.release()
                 }
                 val newTrack = UserTrack(
                     name = name,
-//                    duration = duration.toLong(),
+                    duration = duration.toLongOrNull()?:0L,
                     uri = uri.toString(),
                 )
                 userTrackDao.addTrack(newTrack)

@@ -8,6 +8,6 @@ data class UserTrack(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val name: String,
     val uri: String,
-//    val duration: Long,
+    val duration: Long,
     val isChosen: Boolean = false
 )
