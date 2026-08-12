@@ -276,7 +276,7 @@ fun AnimatedHelpText(modifier: Modifier = Modifier) {
             "Револьвер: особая атака распространяется за пределы экрана",
         )
     }
-    val randomIndex = Random.nextInt(helpTexts.size - 1)
+    val randomIndex = remember { Random.nextInt(helpTexts.size - 1) }
     var helpText by remember { mutableStateOf(helpTexts[randomIndex]) }
     LaunchedEffect(Unit) {
         var index = randomIndex
