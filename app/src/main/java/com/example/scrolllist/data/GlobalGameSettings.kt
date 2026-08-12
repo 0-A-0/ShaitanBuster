@@ -25,7 +25,7 @@ object GlobalGameSettings {
     private val MUSIC_VALUE = floatPreferencesKey("music_value")
     private val TIME_SCALE = floatPreferencesKey("time_scale")
 
-    private val scope = CoroutineScope(Dispatchers.IO)
+    private val scope = CoroutineScope(Dispatchers.Main.immediate)
     var brightness by mutableStateOf(0.1f)
         private set
     private val _useBody = MutableStateFlow(true)
