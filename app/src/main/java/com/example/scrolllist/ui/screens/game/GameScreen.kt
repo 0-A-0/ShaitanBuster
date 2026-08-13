@@ -392,11 +392,7 @@ fun GameScreenController(
                 ) {
                     Settings(
                         zoom = zoom(),
-                        ChangeZoom = { newZoom ->
-                            viewModel.ChangeZoom(
-                                newZoom,
-                                unsucsessAction = {})
-                        },
+                        ChangeZoom = { newZoom -> },
                         Exit = Exit,
                         modifier = Modifier.fillMaxSize(),
                         brightness = GlobalGameSettings.brightness,

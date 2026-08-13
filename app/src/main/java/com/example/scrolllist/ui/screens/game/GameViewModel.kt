@@ -36,15 +36,6 @@ class GameViewModel(
         AudioManager.init(application)
     }
 
-    fun ChangeZoom(newZoom: Float, unsucsessAction: () -> Unit) {
-//        if (canvasWidth / newZoom <= mapSize.width && canvasHeight / newZoom <= mapSize.height) {
-//            zoom = newZoom
-//            checkScroll()
-//        } else {
-//            unsucsessAction()
-//        }
-    }
-
     fun startGame(newMode: Int, DeathPlayer: (Int) -> Unit) {
         if (isActualGame) return
         mode = newMode

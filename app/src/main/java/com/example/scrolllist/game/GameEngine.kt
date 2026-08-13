@@ -80,6 +80,7 @@ class GameEngine(
     val bodies: List<Body> get() = _bodies
     val ammunition: List<Ammunition> get() = _ammunition
 
+    val baseCanvasWidth = 1080f
     var zoom by mutableStateOf(1f)
         //    var zoom = 1f
         private set
@@ -221,6 +222,18 @@ class GameEngine(
             list
         }
 
+    fun changeZoom() {
+        val newZoom = canvasWidth/baseCanvasWidth
+        if (canvasWidth / newZoom <= mapSize.width && canvasHeight / newZoom <= mapSize.height) {
+            zoom = newZoom
+        } else {
+            val zoomByWidth = canvasWidth / mapSize.width
+            val zoomByHeight = canvasHeight / mapSize.height
+            zoom = maxOf(zoomByWidth, zoomByHeight)
+        }
+        checkScroll()
+    }
+
     fun checkScroll() {
         val playerOnScreenX = player.position.x + scrollX
         val playerOnScreenY = player.position.y + scrollY
@@ -250,6 +263,7 @@ class GameEngine(
         if (width == canvasWidth && height == canvasHeight) return
         canvasWidth = width
         canvasHeight = height
+        changeZoom()
         left = canvasWidth / 2f / zoom
         right = (canvasWidth - canvasWidth / 2f) / zoom
         top = canvasHeight / 2f / zoom

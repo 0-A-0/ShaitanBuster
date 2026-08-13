@@ -11,7 +11,7 @@ data class Blood(
 ){
     var lifeTimeMl = 10_000f
     var index = 0
-    val animation = Accumulator(10f)
+    val animation = Accumulator(20f)
     fun update(delta:Float){
         lifeTimeMl -= delta
         animation.update(delta){
