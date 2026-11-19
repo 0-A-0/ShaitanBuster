@@ -293,7 +293,7 @@ fun GameScreenController(
                                             center = player.center,
                                         ),
                                         topLeft = Offset(-scrollX(), -scrollY()),
-                                        size = size,
+                                        size = size.copy(width+50f),
                                     )
                                 }
                             }

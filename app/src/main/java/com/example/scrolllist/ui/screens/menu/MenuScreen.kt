@@ -42,9 +42,9 @@ fun Menu(
             .drawWithContent {
                 drawContent()
                 drawRect(
-                    color = Color.White,
+                    color = Color(0xFF260F11),
                     alpha = GlobalGameSettings.brightness,
-                    blendMode = BlendMode.Screen,
+                    blendMode = BlendMode.Overlay,
                 )
 //                drawImage(
 //                    image = mask,

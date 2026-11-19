@@ -7,19 +7,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameNanos
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.IntSize
-import com.example.scrolllist.managers.AudioManager
+import com.example.scrolllist.domain.units.Player
+import com.example.scrolllist.domain.units.enemy.Enemy
+import com.example.scrolllist.domain.units.enemy.Spawner
+import com.example.scrolllist.domain.units.enemy.bodies.Body
+import com.example.scrolllist.domain.units.enemy.bodies.FixedBody
+import com.example.scrolllist.domain.utils.blazingFor
+import com.example.scrolllist.domain.utils.blazingReflectFor
 import com.example.scrolllist.domain.utils.calcAngle
 import com.example.scrolllist.domain.utils.calcDistance
 import com.example.scrolllist.domain.utils.calcDistanceForComparison
 import com.example.scrolllist.domain.utils.calculatePowerByDist
-import com.example.scrolllist.domain.units.Player
-import com.example.scrolllist.domain.units.enemy.bodies.Body
-import com.example.scrolllist.domain.units.enemy.Enemy
-import com.example.scrolllist.domain.units.enemy.bodies.FixedBody
-import com.example.scrolllist.domain.units.enemy.bodies.GhostBody
-import com.example.scrolllist.domain.units.enemy.Spawner
-import com.example.scrolllist.domain.utils.blazingFor
-import com.example.scrolllist.domain.utils.blazingReflectFor
+import com.example.scrolllist.managers.AudioManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -114,6 +113,7 @@ class Shotgun(
     }
 
     inline fun fire(
+        onSuccessAction:() -> Unit,
         player: Player,
         enemies: List<Enemy>,
         bodies: List<Body>,
@@ -123,7 +123,7 @@ class Shotgun(
         if (clip != 0) {
             clip -= 1
             AudioManager.play(AudioManager.SoundType.SHOTGUN_SHOT)
-
+            onSuccessAction()
             val minDistance = hitDistance * hitDistance
             val fixedPlayerCenter = player.center
             enemies.blazingReflectFor { enemy ->
@@ -141,7 +141,7 @@ class Shotgun(
 
             bodies.blazingReflectFor { body ->
                 val distance = calcDistanceForComparison(fixedPlayerCenter, body.center)
-                if (body is GhostBody || calcDistanceForComparison(
+                if (calcDistanceForComparison(
                         fixedPlayerCenter,
                         body.center
                     ) > minDistance

@@ -20,6 +20,8 @@ object AudioManager {
         private set
     var _musicVolume: Float by mutableStateOf(0.3f)
         private set
+    var _isRandomStartEnabled: Boolean by mutableStateOf(true)
+        private set
 
     enum class SoundType(val volume:Float) { AXE_HIT(1f), REVOLVER_SHOT(1f), SHOTGUN_SHOT(0.3f), PELLETS_CRIBE(1f), CARTRIDGES_CRIBE(1f),HOLY_MOMENT(1f) }
 
@@ -66,23 +68,27 @@ object AudioManager {
     fun stopMusic(){
         musicPlayer?.apply {
             pause()
+            if (!_isRandomStartEnabled) return
             val maxTarget = duration - 45_000
             if (maxTarget > 0) seekTo(Random.nextInt(maxTarget))
             else seekTo(0)
         }
     }
-    fun setMusicSpeed(speed:Float){
-        musicPlayer?.let {
-            it.playbackParams =
-                it.playbackParams.setSpeed(speed)
-        }
-    }
+//    fun setMusicSpeed(speed:Float){
+//        musicPlayer?.let {
+//            it.playbackParams =
+//                it.playbackParams.setSpeed(speed)
+//        }
+//    }
     fun setSoundVolume(volume:Float){
         _soundVolume = volume
     }
     fun setMusicVolume(volume:Float){
         _musicVolume = volume
         musicPlayer?.setVolume(_musicVolume, _musicVolume)
+    }
+    fun setIsRandomStartEnabled(ok: Boolean){
+        _isRandomStartEnabled = ok
     }
 
     fun setActualUserTrack(context: Context, uriString: String?) {

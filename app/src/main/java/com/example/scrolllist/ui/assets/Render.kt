@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.BlendMode
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.graphics.FilterQuality
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.graphics.StrokeCap
@@ -172,6 +173,16 @@ private fun DrawScope.onDrawSpawner(enemy: Spawner, enemyAssets: EnemyAssets) {
         }
     }
 }
+val hitEnemyFilter = ColorFilter.colorMatrix(
+    ColorMatrix(
+        floatArrayOf(
+            2.5f, 0.0f, 0.0f, 0.0f, 50f,
+            0.0f, 2.5f, 0.0f, 0.0f, 50f,
+            0.0f, 0.0f, 2.5f, 0.0f, 50f,
+            0.0f, 0.0f, 0.0f, 1.0f, 0.0f
+        )
+    )
+)
 
 private fun DrawScope.onDrawCrow(enemy: Crow, enemyAssets: EnemyAssets) {
     if (!enemy.enemyIsReady) {
@@ -179,13 +190,14 @@ private fun DrawScope.onDrawCrow(enemy: Crow, enemyAssets: EnemyAssets) {
     } else {
         val currentAnimation =
             if (enemy.angle < 180f) enemyAssets.frontAnimationMirrored else enemyAssets.frontAnimation
+        val hitFilter = if (enemy.hitEffect > 0) hitEnemyFilter else null
         currentAnimation?.let {
             rotate(enemy.angle, pivot = enemy.center) {
                 drawImage(
                     dstSize = enemy.dstSize,
                     dstOffset = enemy.position.round(),
                     image = it[enemy.index],
-                    alpha = enemy.alpha.value,
+                    colorFilter = hitFilter,
                     filterQuality = FilterQuality.None
                 )
             }
@@ -200,6 +212,7 @@ private fun DrawScope.onDrawCrowMinion(enemy: CrowMinion, enemyAssets: EnemyAsse
         } else {
             val currentAnimation =
                 if (angle < 180f) enemyAssets.frontAnimationMirrored else enemyAssets.frontAnimation
+            val hitFilter = if (enemy.hitEffect > 0) hitEnemyFilter else null
             currentAnimation?.let {
                 val currentCenter = this.center
                 drawLine(
@@ -213,14 +226,6 @@ private fun DrawScope.onDrawCrowMinion(enemy: CrowMinion, enemyAssets: EnemyAsse
                     end = currentCenter,
                     strokeWidth = 8f
                 )
-                rotate(angle, pivot = currentCenter) {
-                    drawImage(
-                        dstSize = dstSize,
-                        dstOffset = position.round(),
-                        image = it[index],
-                        filterQuality = FilterQuality.None
-                    )
-                }
                 drawCircle(
                     brush = Brush.radialGradient(
                         0f to Color(0xFF2E1946),
@@ -234,6 +239,15 @@ private fun DrawScope.onDrawCrowMinion(enemy: CrowMinion, enemyAssets: EnemyAsse
                     radius = dstSize.width / 2f,
                     alpha = 0.5f
                 )
+                rotate(angle, pivot = currentCenter) {
+                    drawImage(
+                        dstSize = dstSize,
+                        dstOffset = position.round(),
+                        image = it[index],
+                        colorFilter = hitFilter,
+                        filterQuality = FilterQuality.None
+                    )
+                }
             }
         }
     }

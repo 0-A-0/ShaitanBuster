@@ -21,6 +21,7 @@ object GlobalGameSettings {
     private val BRIGHTNESS = floatPreferencesKey("brightness")
     private val USE_BODY = booleanPreferencesKey("use_body")
     private val USE_BLOOD = booleanPreferencesKey("use_blood")
+    private val IS_RANDOM_START = booleanPreferencesKey("is_random_start")
     private val SOUND_VALUE = floatPreferencesKey("sound_value")
     private val MUSIC_VALUE = floatPreferencesKey("music_value")
     private val TIME_SCALE = floatPreferencesKey("time_scale")
@@ -42,6 +43,7 @@ object GlobalGameSettings {
                 _useBlood.value = it[USE_BLOOD] ?: true
                 AudioManager.setMusicVolume(it[MUSIC_VALUE] ?: 0.3f)
                 AudioManager.setSoundVolume(it[SOUND_VALUE] ?: 1f)
+                AudioManager.setIsRandomStartEnabled(it[IS_RANDOM_START]?: true)
                 TimeManager.setTimeScale(it[TIME_SCALE] ?: 1f)
             }
         }
@@ -67,6 +69,7 @@ object GlobalGameSettings {
                 it[USE_BLOOD] = useBlood.value
                 it[SOUND_VALUE] = AudioManager._soundVolume
                 it[MUSIC_VALUE] = AudioManager._musicVolume
+                it[IS_RANDOM_START] = AudioManager._isRandomStartEnabled
                 it[TIME_SCALE] = TimeManager.timeScale.value
             }
         }

@@ -16,9 +16,7 @@ class Scarecrow(
     override val dstSize: IntSize = IntSize(230,200)
     override val damage: Int = 40
     override val animationSpeed = 100f
-    override suspend fun onHitEffect() {
 
-    }
     override fun move(player: Offset, deltaTime: Float) {
         if (player != Offset.Unspecified) {
             val dx = player - position

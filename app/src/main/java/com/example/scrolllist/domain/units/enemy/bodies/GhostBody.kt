@@ -11,9 +11,6 @@ class GhostBody(
     override fun update(delta: Float) {
         super.update(delta)
         alpha -= 0.05f
-    }
-
-    override fun addBias(power: Int, angle: Float, powerWeapon: Float) {
-        return
+        position += bias
     }
 }

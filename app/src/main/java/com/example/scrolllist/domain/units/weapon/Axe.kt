@@ -6,16 +6,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.unit.IntSize
-import com.example.scrolllist.managers.TimeManager
+import com.example.scrolllist.domain.units.enemy.Enemy
+import com.example.scrolllist.domain.units.enemy.bodies.Body
+import com.example.scrolllist.domain.utils.blazingReflectFor
 import com.example.scrolllist.domain.utils.caclAxePower
 import com.example.scrolllist.domain.utils.calcAngle
 import com.example.scrolllist.domain.utils.calcDistanceForComparison
 import com.example.scrolllist.domain.utils.isIntersectWithLine
-import com.example.scrolllist.domain.units.enemy.bodies.Body
-import com.example.scrolllist.domain.units.enemy.Enemy
-import com.example.scrolllist.domain.units.enemy.bodies.GhostBody
-import com.example.scrolllist.domain.utils.blazingFor
-import com.example.scrolllist.domain.utils.blazingReflectFor
+import com.example.scrolllist.managers.TimeManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -142,7 +140,7 @@ class Axe(
         }
 
         bodies.blazingReflectFor { body ->
-            if (body !is GhostBody && calcDistanceForComparison(pCenter, body.center) <= hitDistanceX2) {
+            if (calcDistanceForComparison(pCenter, body.center) <= hitDistanceX2) {
                 val bodyAngle = if (trend) calcAngle(body.center, pCenter)
                 else -(360f - calcAngle(body.center, pCenter))
 

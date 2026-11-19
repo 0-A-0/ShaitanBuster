@@ -19,7 +19,7 @@ class Crow(
     animationSize: Int
 ):Enemy(speed, startPosition, spawnAnimationSize,animationSize ) {
     override val bodyType: BodyType = BodyType.Flyable_Body
-    val alpha = Animatable(1f)
+    var hitEffect = 0f
     val angle:Float = calcAngle(fixedPlayerPosition, center)
     override val dstSize: IntSize = IntSize(150,150)
     override val animationSpeed = 20f
@@ -32,15 +32,12 @@ class Crow(
         if (abs(distance) > 0.0001f) dx / distance else Offset(1f,0f)
     }
 
-    override suspend fun onHitEffect() {
-        alpha.animateTo(
-            targetValue = 0.2f,
-            animationSpec = tween(durationMillis = 200)
-        )
-        alpha.snapTo(1f)
+    override fun onHitEffect() {
+        hitEffect = 2f // 2 секунды
     }
 
     override fun move(player: Offset, deltaTime: Float) {
         position += vector * speed * deltaTime
+        hitEffect -= deltaTime
     }
 }

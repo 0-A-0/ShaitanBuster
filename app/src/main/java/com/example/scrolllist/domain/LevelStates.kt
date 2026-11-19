@@ -2,6 +2,8 @@ package com.example.scrolllist.domain
 
 data class LevelStates(
     val spawnTime: Long,
+    val spawnTimeCrow: Long,
+    val spawnTimeSpawner: Long,
     val enemyScarecrowCounts: Int,
     val enemyCrowCounts: Int,
     val enemySmokeCounts: Int,

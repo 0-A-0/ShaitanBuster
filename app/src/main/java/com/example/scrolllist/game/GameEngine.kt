@@ -98,73 +98,186 @@ class GameEngine(
     var trigger2 by mutableStateOf(0)
     val levelStates: LevelStates
         get() = when (level) {
-            // 1: Вступление. Скорость 300-500 пикс/сек.
-            1 -> LevelStates(400L, 15, 0, 0, 0, (300..500))
-
-            // 2: Плотность выше.
-            2 -> LevelStates(100L, 30, 1, 0, 0, (300..550), (400..600))
-
-            // 3: Первая ворона. Она быстрее пугала.
-            3 -> LevelStates(800L, 15, 5, 0, 0, (400..600), (700..900))
-
-            // 4: Толпа пугал. Отдыхаем от ворон, но темп выше.
-            4 -> LevelStates(0L, 20, 0, 0, 0, (450..650))
-
-            // 5: Теневой заслон. Дым (Smoke) летает ОЧЕНЬ быстро.
-            5 -> LevelStates(300L, 350, 0, 1, 0, (500..700), (0..0), (1200..1500))
-
-            // 6: Гнездо и дым.
-            6 -> LevelStates(1000L, 15, 0, 15, 0, (550..750), (0..0), (600..900))
-
-            // 7: Спаунер вносит суету.
-            7 -> LevelStates(900L, 10, 5, 5, 1, (600..800), (800..1000), (600..850), (700..900))
-
-            // 8: Охота. Вороны повсюду.
-            8 -> LevelStates(1200L, 5, 15, 0, 0, (650..850), (900..1100))
-
-            // 9: Осада. Высокий темп и дым.
-            9 -> LevelStates(800L, 25, 0, 20, 3, (700..900), (0..0), (800..1000), (850..1050))
-
-            // 10: Финальный темп. Почти предел реакции.
-            10 -> LevelStates(
-                700L,
-                30,
-                10,
-                10,
-                1,
-                (750..950),
-                (1000..1200),
-                (900..1100),
-                (950..1150)
+            1 -> LevelStates(
+                spawnTime = 200L,
+                spawnTimeCrow = 2000L,
+                spawnTimeSpawner = 0L,
+                enemyScarecrowCounts = 40,
+                enemyCrowCounts = 0,
+                enemySmokeCounts = 0,
+                enemySpawnerCounts = 0,
+                speedScarecrowRange = (100..200),
+                speedMinionRange = (100..200)
             )
 
-            // 11: Испытание. Максимальная сложность.
+            2 -> LevelStates(
+                spawnTime = 150L,
+                spawnTimeCrow = 1200L,
+                spawnTimeSpawner = 5000L,
+                enemyScarecrowCounts = 60,
+                enemyCrowCounts = 10,
+                enemySmokeCounts = 0,
+                enemySpawnerCounts = 0,
+                speedScarecrowRange = (200..250),
+                speedCrowRange = (350..450)
+            )
+
+            3 -> LevelStates(
+                spawnTime = 400L,
+                spawnTimeCrow = 450L,
+                spawnTimeSpawner = 5000L,
+                enemyScarecrowCounts = 50,
+                enemyCrowCounts = 30,
+                enemySmokeCounts = 0,
+                enemySpawnerCounts = 0,
+                speedScarecrowRange = (200..300),
+                speedCrowRange = (350..500)
+            )
+
+            4 -> LevelStates(
+                spawnTime = 150L,
+                spawnTimeCrow = 1500L,
+                spawnTimeSpawner = 5000L,
+                enemyScarecrowCounts = 120,
+                enemyCrowCounts = 12,
+                enemySmokeCounts = 8,
+                enemySpawnerCounts = 0,
+                speedScarecrowRange = (200..300),
+                speedCrowRange = (200..300),
+                speedSmokeRange = (350..450)
+            )
+
+            5 -> LevelStates(
+                //до сюда хорошо, просто количество прибавить
+                spawnTime = 2000L,
+                spawnTimeCrow = 1000L,
+                spawnTimeSpawner = 3700L,
+                enemyScarecrowCounts = 0,
+                enemyCrowCounts = 0,
+                enemySmokeCounts = 16,
+                enemySpawnerCounts = 6,
+                speedScarecrowRange = (450..600),
+                speedSmokeRange = 400..500,
+                speedCrowRange = (500..650),
+                speedMinionRange = (300..450)
+            )
+
+            6 -> LevelStates(
+                spawnTime = 150L,
+                spawnTimeCrow = 2000L,
+                spawnTimeSpawner = 5000L,
+                enemyScarecrowCounts = 100,
+                enemyCrowCounts = 10,
+                enemySmokeCounts = 40,
+                enemySpawnerCounts = 0,
+                speedScarecrowRange = (200..300),
+                speedCrowRange = (350..400),
+                speedSmokeRange = (450..500)
+            )
+
+            7 -> LevelStates(
+                spawnTime = 100L,
+                spawnTimeCrow = 1000L,
+                spawnTimeSpawner = 3000L,
+                enemyScarecrowCounts = 100,
+                enemyCrowCounts = 30,
+                enemySmokeCounts = 15,
+                enemySpawnerCounts = 2,
+                speedScarecrowRange = (300..400),
+                speedCrowRange = (300..450),
+                speedSmokeRange = (300..450),
+                speedMinionRange = (300..400)
+            )
+
+            8 -> LevelStates(
+                // интересный уровень
+                spawnTime = 600L,
+                spawnTimeCrow = 250L,
+                spawnTimeSpawner = 7000L,
+                enemyScarecrowCounts = 0,
+                enemyCrowCounts = 100,
+                enemySmokeCounts = 0,
+                enemySpawnerCounts = 1,
+                speedScarecrowRange = (500..650),
+                speedCrowRange = (650..800),
+                speedMinionRange = (400..400)
+            )
+
+            9 -> LevelStates(
+                spawnTime = 80L,
+                spawnTimeCrow = 4000L,
+                spawnTimeSpawner = 1000L,
+                enemyScarecrowCounts = 0,
+                enemyCrowCounts = 2,
+                enemySmokeCounts = 25,
+                enemySpawnerCounts = 10,
+                speedScarecrowRange = (300..400),
+                speedCrowRange = (400..550),
+                speedSmokeRange = (400..500),
+                speedMinionRange = (300..400)
+            )
+
+            10 -> LevelStates(
+                // Можно оставить
+                spawnTime = 20L,
+                spawnTimeCrow = 600L,
+                spawnTimeSpawner = 3000L,
+                enemyScarecrowCounts = 1000,
+                enemyCrowCounts = 0,
+                enemySmokeCounts = 0,
+                enemySpawnerCounts = 0,
+                speedScarecrowRange = (200..300),
+                speedCrowRange = (650..800),
+                speedSmokeRange = (600..800),
+                speedMinionRange = (350..500)
+            )
+
             11 -> LevelStates(
-                750L,
-                40,
-                20,
-                20,
-                2,
-                (800..1000),
-                (1100..1300),
-                (1000..1200),
-                (1050..1250)
+                spawnTime = 40L,
+                spawnTimeCrow = 450L,
+                spawnTimeSpawner = 2500L,
+                enemyScarecrowCounts = 300,
+                enemyCrowCounts = 65,
+                enemySmokeCounts = 60,
+                enemySpawnerCounts = 8,
+                speedScarecrowRange = (200..300),
+                speedCrowRange = (400..700),
+                speedSmokeRange = (200..350),
+                speedMinionRange = (350..400)
+            )
+
+            12 -> LevelStates(
+                spawnTime = 30L,
+                spawnTimeCrow = 350L,
+                spawnTimeSpawner = 2000L,
+                enemyScarecrowCounts = 400,
+                enemyCrowCounts = 80,
+                enemySmokeCounts = 100,
+                enemySpawnerCounts = 6,
+                speedScarecrowRange = (200..350),
+                speedCrowRange = (200..300),
+                speedSmokeRange = (250..450),
+                speedMinionRange = (400..550)
             )
 
             else -> LevelStates(
-                600L,
-                50,
-                30,
-                30,
-                3,
-                (850..1050),
-                (1150..1350),
-                (1100..1300),
-                (1100..1300)
+                spawnTime = 30L,
+                spawnTimeCrow = 350L,
+                spawnTimeSpawner = 2000L,
+                enemyScarecrowCounts = 400,
+                enemyCrowCounts = 80,
+                enemySmokeCounts = 100,
+                enemySpawnerCounts = 6,
+                speedScarecrowRange = (650..850),
+                speedCrowRange = (650..800),
+                speedSmokeRange = (650..850),
+                speedMinionRange = (400..550)
             )
         }
     var kills = 0
     val mapSize = IntSize(2000, 2500)
+    val spawnFieldX = (0..mapSize.width-300)
+    val spawnFieldY = (0..mapSize.height-300)
     val epsilon = 15f
     var left = canvasWidth / 2f / zoom - epsilon
     var right = (canvasWidth - canvasWidth / 2f) / zoom + epsilon
@@ -208,8 +321,8 @@ class GameEngine(
             val list = List<BoxObject>(10) { index ->
                 BoxObject(
                     startPosition = Offset(
-                        (0..mapSize.width).random().toFloat(),
-                        (0..mapSize.height).random().toFloat()
+                        spawnFieldX.random().toFloat(),
+                        spawnFieldY.random().toFloat()
                     )
                 )
             }.toMutableList()
@@ -379,7 +492,7 @@ class GameEngine(
         this.angle = calcAngle(position, player.center)
         var killCount = 0
         this.fire(
-            onSuccessAction = { },
+            onSuccessAction = {  },
             position = position,
             player = player,
             enemies = _enemies,
@@ -409,7 +522,7 @@ class GameEngine(
                         addAmmunition(ammunition)
                     }
                 } else {
-                    scope.launch { enemy.onHitEffect() }
+                    enemy.onHitEffect()
                 }
             },
             onHitBody = ::onHitBody
@@ -436,7 +549,7 @@ class GameEngine(
 //                            addAmmunition(ammunition)
 //                        }
 //                    } else {
-//                        scope.launch { enemy.onHitEffect() }
+//                        enemy.onHitEffect()
 //                    }
 //                }
 //            }
@@ -454,6 +567,7 @@ class GameEngine(
         this.animateShotgun(position)
         var killCount = 0
         this.fire(
+            onSuccessAction = { player.startRecoil(position)},
             player = player,
             enemies = _enemies,
             bodies = _bodies,
@@ -471,7 +585,7 @@ class GameEngine(
                         addAmmunition(ammunition)
                     }
                 } else {
-                    scope.launch { enemy.onHitEffect() }
+                    enemy.onHitEffect()
                 }
             },
             onHitBody = ::onHitBody
@@ -484,7 +598,6 @@ class GameEngine(
             )
             killmarkController.startAnimation(newKillmark)
         }
-        player.startRecoil(position)
     }
 
     fun revolverTap(offset: Offset) {
@@ -527,6 +640,7 @@ class GameEngine(
                 position = shotgun.targetMagnet ?: Offset.Zero,
             )
             shotgun.targetMagnet = null
+            trigger++
         }
     }
 
@@ -596,7 +710,7 @@ class GameEngine(
                                 }
                             addAmmunition(ammunition)
                         }
-                    } else scope.launch { enemy.onHitEffect() }
+                    } else enemy.onHitEffect()
                 },
                 onHitBody = ::onHitBody
             )
@@ -632,7 +746,7 @@ class GameEngine(
                             }
                             addAmmunition(ammunition)
                         }
-                    } else scope.launch { enemy.onHitEffect() }
+                    } else enemy.onHitEffect()
                 },
                 onHitBody = ::onHitBody,
             )
@@ -658,8 +772,8 @@ class GameEngine(
                         Scarecrow(
                             spawnAnimationSize = gameAssetsSize.spawnAnimationSize,
                             startPosition = Offset(
-                                (0..mapSize.width).random().toFloat(),
-                                (0..mapSize.height).random().toFloat()
+                                spawnFieldX.random().toFloat(),
+                                spawnFieldY.random().toFloat()
                             ),
                             speed = speedScarecrowRange.random().toFloat(),
                             animationSize = gameAssetsSize.scarecrowAnimationSize
@@ -669,14 +783,14 @@ class GameEngine(
             }
             scope.launch {
                 for (i in 0 until enemyCrowCounts) {
-                    TimeManager.delay(spawnTime)
+                    TimeManager.delay(spawnTimeCrow)
                     add(
                         enemy =
                         Crow(
                             spawnAnimationSize = gameAssetsSize.spawnAnimationSize,
                             startPosition = Offset(
-                                (0..mapSize.width).random().toFloat(),
-                                (0..mapSize.height).random().toFloat()
+                                spawnFieldX.random().toFloat(),
+                                spawnFieldY.random().toFloat()
                             ),
                             speed = speedCrowRange.random().toFloat(),
                             animationSize = gameAssetsSize.crowAnimationSize,
@@ -687,27 +801,18 @@ class GameEngine(
             }
             scope.launch {
                 for (i in 0 until enemySpawnerCounts) {
-                    TimeManager.delay(spawnTime)
-                    add(
-                        enemy =
-                        Spawner(
-                            spawnAnimationSize = gameAssetsSize.spawnAnimationSize,
-                            startPosition = Offset(
-                                (0..mapSize.width).random().toFloat(),
-                                (0..mapSize.height).random().toFloat()
-                            ),
-                            action = { self ->
-                                add(
-                                    enemy = CrowMinion(
-                                        spawnAnimationSize = gameAssetsSize.spawnAnimationSize,
-                                        startPosition = self.center,
-                                        speed = speedMinionRange.random().toFloat(),
-                                        animationSize = gameAssetsSize.crowAnimationSize,
-                                    )
-                                )
-                            }
-                        )
+                    TimeManager.delay(spawnTimeSpawner)
+                    val spawner = Spawner(
+                        spawnAnimationSize = gameAssetsSize.spawnAnimationSize,
+                        startPosition = Offset(
+                            spawnFieldX.random().toFloat(),
+                            spawnFieldY.random().toFloat()
+                        ),
+                        speedMinionRange = levelStates.speedMinionRange,
+                        crowAnimationSize = gameAssetsSize.crowAnimationSize
                     )
+                    add(enemy = spawner)
+                    add(enemy = spawner.minion)
                 }
             }
             scope.launch {
@@ -717,8 +822,8 @@ class GameEngine(
                         enemy = Smoke(
                             spawnAnimationSize = gameAssetsSize.spawnAnimationSize,
                             startPosition = Offset(
-                                (0..mapSize.width).random().toFloat(),
-                                (0..mapSize.height).random().toFloat()
+                                spawnFieldX.random().toFloat(),
+                                spawnFieldY.random().toFloat()
                             ),
                             speed = speedSmokeRange.random().toFloat(),
                             animationSize = gameAssetsSize.smokeAnimationSize
@@ -728,33 +833,49 @@ class GameEngine(
             }
         }
         if (mode == 1) {
+            var speedRange = (200..300)
+            var spawnTime = 1000L
+            val speedRangeMinion = (300..400)
+            var bloodyTime = false
             scope.launch {
-                val speedRange = (600..900)
+                while (true) {
+                    TimeManager.delay(10_000L)
+                    if(spawnTime >= 100L) {
+                        spawnTime = (spawnTime - 300L).coerceAtLeast(40L)
+                        if (spawnTime <= 100L) bloodyTime = true
+                    } else {
+                        spawnTime = 1000L
+                        bloodyTime = false
+                        speedRange = speedRange.start+50..speedRange.endInclusive+50
+                    }
+                }
+            }
+            scope.launch {
                 while (true) {
                     val random = Random.nextFloat()
-                    TimeManager.delay(1000L)
-                    if (random < 0.8f) {
+                    TimeManager.delay(spawnTime)
+//                    if (random < 0.8f) {
                         add(
                             enemy =
                             Scarecrow(
                                 spawnAnimationSize = gameAssetsSize.spawnAnimationSize,
                                 startPosition = Offset(
-                                    (0..mapSize.width).random().toFloat(),
-                                    (0..mapSize.height).random().toFloat()
+                                    spawnFieldX.random().toFloat(),
+                                    spawnFieldY.random().toFloat()
                                 ),
                                 speed = speedRange.random().toFloat(),
                                 animationSize = gameAssetsSize.scarecrowAnimationSize
                             )
                         )
-                    }
-                    if (random < 0.4f) {
+//                    }
+                    if (!bloodyTime && random < 0.15f) {
                         add(
                             enemy =
                             Crow(
                                 spawnAnimationSize = gameAssetsSize.spawnAnimationSize,
                                 startPosition = Offset(
-                                    (0..mapSize.width).random().toFloat(),
-                                    (0..mapSize.height).random().toFloat()
+                                    spawnFieldX.random().toFloat(),
+                                    spawnFieldY.random().toFloat()
                                 ),
                                 speed = speedRange.random().toFloat(),
                                 animationSize = gameAssetsSize.crowAnimationSize,
@@ -767,35 +888,26 @@ class GameEngine(
                             enemy = Smoke(
                                 spawnAnimationSize = gameAssetsSize.spawnAnimationSize,
                                 startPosition = Offset(
-                                    (0..mapSize.width).random().toFloat(),
-                                    (0..mapSize.height).random().toFloat()
+                                    spawnFieldX.random().toFloat(),
+                                    spawnFieldY.random().toFloat()
                                 ),
                                 speed = speedRange.random().toFloat(),
                                 animationSize = gameAssetsSize.smokeAnimationSize
                             )
                         )
                     }
-                    if (random < 0.1f) {
-                        add(
-                            enemy =
-                            Spawner(
-                                spawnAnimationSize = gameAssetsSize.spawnAnimationSize,
-                                startPosition = Offset(
-                                    (0..mapSize.width).random().toFloat(),
-                                    (0..mapSize.height).random().toFloat()
-                                ),
-                                action = { self ->
-                                    add(
-                                        enemy = CrowMinion(
-                                            spawnAnimationSize = gameAssetsSize.spawnAnimationSize,
-                                            startPosition = self.center,
-                                            speed = speedRange.random().toFloat(),
-                                            animationSize = gameAssetsSize.crowAnimationSize,
-                                        )
-                                    )
-                                }
-                            )
+                    if (!bloodyTime && random < 0.01f) {
+                        val spawner = Spawner(
+                            spawnAnimationSize = gameAssetsSize.spawnAnimationSize,
+                            startPosition = Offset(
+                                spawnFieldX.random().toFloat(),
+                                spawnFieldY.random().toFloat()
+                            ),
+                            speedMinionRange = speedRangeMinion,
+                            crowAnimationSize = gameAssetsSize.crowAnimationSize
                         )
+                        add(enemy = spawner)
+                        add(enemy = spawner.minion)
                     }
                 }
             }
@@ -815,21 +927,20 @@ class GameEngine(
             val levelCompleteFlow = snapshotFlow { isLevelCompleted }
             combine(
                 levelCompleteFlow,
-                TimeManager.timeScale,
                 TimeManager.isTimePaused
-            ) { levelCompleted, scale, paused ->
-                Triple(levelCompleted, scale, paused)
-            }.distinctUntilChanged().collectLatest { (levelCompleted, scale, paused) ->
+            ) { levelCompleted, paused ->
+                Pair(levelCompleted, paused)
+            }.distinctUntilChanged().collectLatest { (levelCompleted, paused) ->
                 if (levelCompleted) {
                     AudioManager.stopMusic()
                 } else {
                     delay(30L)
-                    if (!paused) AudioManager.setMusicSpeed(scale)
                     AudioManager.playMusic(paused)
                 }
             }
         }
     }
+
 
     fun changeWeapon(index: Int) {
         weapon = when (index) {
@@ -862,6 +973,9 @@ class GameEngine(
 
     fun killEnemy(enemy: Enemy) {
         _enemies.remove(enemy)
+        if (enemy is Spawner) {
+            killEnemy(enemy.minion)
+        }
         if (GlobalGameSettings.useBody.value) {
             val body = when (enemy.bodyType) {
                 BodyType.Simple_Body -> SimpleBody(

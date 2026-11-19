@@ -48,7 +48,7 @@ abstract class Enemy(
 
     abstract fun move(player: Offset, deltaTime: Float)
 
-    open suspend fun onHitEffect() {
+    open fun onHitEffect() {
         return
     }
 

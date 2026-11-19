@@ -10,11 +10,13 @@ import kotlin.math.abs
 
 @Stable
 class CrowMinion(
-    speed: Float = 3f,
+    speed: Float,
     val startPosition: Offset = Offset.Zero,
     spawnAnimationSize:Int,
     animationSize: Int
 ) : Enemy(speed, startPosition, spawnAnimationSize,animationSize) {
+    override val killable: Boolean = false
+    var hitEffect = 0f
     override val bodyType: BodyType = BodyType.Flyable_Body
     override val dstSize: IntSize = IntSize(150, 150)
     override val animationSpeed = 20f
@@ -23,6 +25,10 @@ class CrowMinion(
     override val killWeight: Int = 0
     var angle: Float = 0f
     var direction = Offset.Unspecified
+
+    override fun onHitEffect() {
+        hitEffect = 2f // 2 секунды
+    }
 
     override fun move(player: Offset, deltaTime: Float) {
         if (player != Offset.Unspecified) {
@@ -34,5 +40,6 @@ class CrowMinion(
                 position += direction * speed * deltaTime
             }
         }
+        hitEffect -= deltaTime
     }
 }

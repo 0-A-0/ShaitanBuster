@@ -26,8 +26,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.GenericShape
 import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Surface
@@ -157,11 +159,11 @@ fun AnimatedVisibilityScope.Settings(
                         fontSize = 20.sp,
                         modifier = Modifier.padding(bottom = 20.dp),
                     )
-                    Text("Яркость:")
+                    Text("Запечённость:")
                     MySlider(
                         value = brightness,
                         onValueChange = { GlobalGameSettings.changeBrightness(it) },
-                        valueRange = 0f..0.2f,
+                        valueRange = 0f..1f,
                     ) {
                         val infiniteTransition = rememberInfiniteTransition()
                         val firePulse by infiniteTransition.animateFloat(
@@ -285,19 +287,12 @@ fun AnimatedVisibilityScope.Settings(
 //                            modifier = Modifier
 //                        )
                     }
-                    Text("Размер окна: x%.1f".format(zoom))
-                    MySlider(
-                        value = zoom,
-                        onValueChange = { ChangeZoom(it) },
-                        valueRange = 0.1f..2f,
-                        steps = 18,
-                    ) {
-                        Text(
-                            "🔎",
-                            fontSize = 20.sp,
-                            modifier = Modifier
-                        )
-                    }
+                    Text("Случайный старт стрека")
+                    MyCheckbox(
+                        checked = AudioManager._isRandomStartEnabled,
+                        onCheckedChange = { AudioManager.setIsRandomStartEnabled(it) },
+                        modifier = Modifier.height(20.dp).width(40.dp)
+                    )
                     MyButton(onClick = { Exit() }) {
                         Text("Выйти в меню")
                     }

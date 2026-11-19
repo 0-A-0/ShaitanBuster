@@ -13,7 +13,6 @@ import com.example.scrolllist.domain.utils.Accumulator
 import com.example.scrolllist.domain.utils.isIntersectWithLine
 import com.example.scrolllist.domain.units.enemy.bodies.Body
 import com.example.scrolllist.domain.units.enemy.Enemy
-import com.example.scrolllist.domain.units.enemy.bodies.GhostBody
 import com.example.scrolllist.domain.utils.blazingReflectFor
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
@@ -26,7 +25,7 @@ class Revolver(
 //    val viewRightAnimation: List<ImageBitmap>,
 //    val viewLeftAnimation: List<ImageBitmap>,
 ) : Weapon {
-    override val minHolyModeUsable: Float = 0.1f
+    override val minHolyModeUsable: Float = 0.05f
     override var holyModeProgress by mutableStateOf(0f)
     override val present_clip: String
         get() = "$clip"
@@ -117,7 +116,6 @@ class Revolver(
                 }
             }
             bodies.blazingReflectFor { body ->
-                if (body is GhostBody) return@blazingReflectFor
                 if ((holyMode || bulletRect!!.overlaps(body.collisionRect)) && isIntersectWithLine(body.collisionRect, fixedPlayerCenter, position, holyMode)) {
                     if(holyMode) onHitBody(body,angle, 10, 10f)
                     else onHitBody(body,angle, 7, 5f)
